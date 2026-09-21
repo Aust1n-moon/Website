@@ -572,10 +572,6 @@ footer {
 
 /* Responsive */
 @media (max-width: 600px) {
-  .flow-lines {
-    display: none;
-  }
-
   /* Nav */
   nav .container {
     padding: 0 1rem;
