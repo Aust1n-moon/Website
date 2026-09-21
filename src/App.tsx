@@ -115,25 +115,9 @@ function FlowGraphic() {
 }
 
 function ProfilePage() {
-  const bgRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const onScroll = () => {
-      const el = bgRef.current
-      if (!el) return
-      const pct = Math.min(window.scrollY / window.innerHeight, 1)
-      el.style.opacity = `${1 - pct}`
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   return (
     <div className="profile-wrapper">
       <FlowGraphic />
-      <div ref={bgRef} className="profile-bg">
-        <img src="/profile.png" alt="" />
-      </div>
       <section className="profile-hero">
         <FadeIn className="profile-info">
           <h1>Austin Moon</h1>
