@@ -610,8 +610,6 @@ footer {
 
   .profile-bg {
     opacity: 0.15;
-    mask-image: none;
-    -webkit-mask-image: none;
   }
 
   .scroll-indicator {
