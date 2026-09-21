@@ -574,48 +574,147 @@ footer {
 
 /* Responsive */
 @media (max-width: 600px) {
-  .profile {
-    justify-content: center;
-    padding: 6rem 1.5rem 2rem;
-  }
-
-  .profile-bg {
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    opacity: 0.3;
-    mask-image: none;
-    -webkit-mask-image: none;
-  }
-
   .flow-lines {
     display: none;
   }
 
+  /* Nav */
+  nav .container {
+    padding: 0 1rem;
+  }
+
+  nav .nav-links {
+    gap: 0.5rem;
+  }
+
+  nav .nav-links a {
+    font-size: 0.75rem;
+  }
+
+  nav .name {
+    font-size: 0.95rem;
+  }
+
+  /* Profile hero */
   .profile-hero {
-    padding: 6rem 1.5rem 2rem;
+    padding: 4rem 1.25rem 2rem;
   }
 
   .profile-info h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 
+  .profile-info .tagline {
+    font-size: 1.1rem;
+  }
+
+  .profile-bg {
+    opacity: 0.15;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .scroll-indicator {
+    font-size: 0.65rem;
+    bottom: 1.5rem;
+  }
+
+  /* Profile about */
   .profile-about {
-    padding: 3rem 1.5rem;
+    padding: 3rem 1.25rem;
+    min-height: auto;
   }
 
+  .profile-bottom {
+    flex-direction: column;
+    gap: 2rem;
+  }
 
+  .profile-bio h3,
+  .profile-stack h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .bio {
+    font-size: 0.95rem;
+    padding: 1.25rem;
+  }
+
+  .stack-tag {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.75rem;
+  }
+
+  /* Sections */
+  section {
+    padding-top: 4.5rem;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  /* Experience cards */
   .exp-card {
     flex-direction: column;
     gap: 0.75rem;
   }
 
-  nav .nav-links {
-    gap: 0.75rem;
+  .exp-header {
+    flex-direction: column;
+    gap: 0.15rem;
   }
 
-  nav .nav-links a {
+  .exp-info h3 {
+    font-size: 1rem;
+  }
+
+  .exp-info .position {
+    font-size: 0.85rem;
+  }
+
+  .exp-info .dates {
     font-size: 0.8rem;
+  }
+
+  .exp-info .description {
+    font-size: 0.85rem;
+  }
+
+  .exp-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Project cards */
+  .project-header {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .project-card h3 {
+    font-size: 1rem;
+  }
+
+  .project-card p {
+    font-size: 0.85rem;
+  }
+
+  .project-tag {
+    font-size: 0.7rem;
+  }
+
+  .card {
+    padding: 1.25rem;
   }
 }
