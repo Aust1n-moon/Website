@@ -609,7 +609,11 @@ footer {
   }
 
   .profile-bg {
-    opacity: 0.15;
+    width: 100%;
+  }
+
+  .profile-bg img {
+    opacity: 0.2;
   }
 
   .scroll-indicator {
