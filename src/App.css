@@ -67,17 +67,19 @@ nav .name {
   position: relative;
 }
 
-.resume-menu button {
-  background: none;
-  border: none;
-  padding: 0;
+.resume-menu summary {
+  list-style: none;
   cursor: pointer;
   color: var(--text-muted);
   transition: color 0.2s;
 }
 
-.resume-menu:hover button,
-.resume-menu:focus-within button {
+.resume-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.resume-menu:hover summary,
+.resume-menu[open] summary {
   color: #ffffff;
 }
 
@@ -92,7 +94,7 @@ nav .name {
 }
 
 .resume-menu:hover .resume-dropdown,
-.resume-menu:focus-within .resume-dropdown {
+.resume-menu[open] .resume-dropdown {
   display: flex;
 }
 
