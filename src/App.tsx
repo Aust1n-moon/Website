@@ -21,7 +21,7 @@ const projects = [
   { title: 'Ghelper Clone', tag: 'Linux', description: 'Tray app for system hardware control panel for Linux on ASUS', link: 'https://github.com/Aust1n-moon/Ghelper-clone' },
   { title: 'Firefighter Bot', tag: 'Robotics', description: 'Autonomous robot for map navigation and fire detection/termination', link: 'https://github.com/Aust1n-moon/Firefighter-Bot-Firmware' },
   { title: 'Flipper Bot', tag: 'Robotics', description: 'Autonomous switch-flipping robot with PID control, odometry-based boundary tracking, and evasive maneuvers', link: 'https://github.com/Aust1n-moon/Flipper-Bot' },
-  { title: 'Sumo Bot', tag: 'Robotics', description: 'Battlebot with 3 custom PCBs and IR edge/opponent detection; reached the semi-finals out of 10+ bots', link: 'https://github.com/Aust1n-moon/Sumo-Bot' },
+  { title: 'Sumo Bot', tag: 'Robotics', description: 'Battlebot with 3 custom PCBs, IR edge detection and a front opponent sensor; reached the semi-finals out of 10+ bots', link: 'https://github.com/Aust1n-moon/Sumo-Bot' },
 ]
 
 
