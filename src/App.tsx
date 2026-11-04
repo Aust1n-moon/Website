@@ -19,8 +19,9 @@ const projects = [
   { title: 'NFL Defensive Coverage Predictor', tag: 'AI/ML', description: 'End-to-end pipeline of predicting defensive coverages from video clips', link: 'https://github.com/Aust1n-moon/coverage-predictor' },
   { title: 'NBA Predictor', tag: 'AI/ML', description: 'Predicting game outcomes, spread, team totals, O/U', link: 'https://github.com/Aust1n-moon/NBA-Predictor' },
   { title: 'Ghelper Clone', tag: 'Linux', description: 'Tray app for system hardware control panel for Linux on ASUS', link: 'https://github.com/Aust1n-moon/Ghelper-clone' },
-  { title: 'Quadcopter Drone', tag: 'Robotics', description: 'Arduino Quadcopter Drone', link: 'https://github.com/Aust1n-moon/Quadcopter-Drone-Firmware' },
   { title: 'Firefighter Bot', tag: 'Robotics', description: 'Autonomous robot for map navigation and fire detection/termination', link: 'https://github.com/Aust1n-moon/Firefighter-Bot-Firmware' },
+  { title: 'Flipper Bot', tag: 'Robotics', description: 'Autonomous switch-flipping robot with PID control, odometry-based boundary tracking, and evasive maneuvers', link: 'https://github.com/Aust1n-moon/Flipper-Bot' },
+  { title: 'Sumo Bot', tag: 'Robotics', description: 'Battlebot with 3 custom PCBs and IR edge/opponent detection; reached the semi-finals out of 10+ bots', link: 'https://github.com/Aust1n-moon/Sumo-Bot' },
 ]
 
 
@@ -209,19 +210,24 @@ function ProjectsPage() {
         <FadeIn>
           <h2 className="section-title">Projects</h2>
         </FadeIn>
-        {projects.map((proj, i) => (
-          <FadeIn key={i}>
-            <a href={proj.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div className="card project-card">
-                <div className="project-header">
-                  <h3>{proj.title} <span className="arrow">→</span></h3>
-                  {proj.tag && <span className="project-tag">{proj.tag}</span>}
-                </div>
-                <p>{proj.description}</p>
+        {projects.map((proj, i) => {
+          const card = (
+            <div className="card project-card">
+              <div className="project-header">
+                <h3>{proj.title} {proj.link && <span className="arrow">→</span>}</h3>
+                {proj.tag && <span className="project-tag">{proj.tag}</span>}
               </div>
-            </a>
-          </FadeIn>
-        ))}
+              <p>{proj.description}</p>
+            </div>
+          )
+          return (
+            <FadeIn key={i}>
+              {proj.link
+                ? <a href={proj.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>{card}</a>
+                : card}
+            </FadeIn>
+          )
+        })}
         <footer><p>© {new Date().getFullYear()} Austin Moon</p></footer>
       </div>
     </section>

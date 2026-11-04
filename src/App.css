@@ -531,7 +531,7 @@ section {
 }
 
 /* Projects */
-.project-card {
+a .project-card {
   cursor: pointer;
 }
 
