@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
 import './App.css'
 
 const internships = [
+  { company: 'Linamar - Innovation Hub', logo: '/logos/linamar_innovation_hub_logo.jpg', position: 'Robotics Applications Intern', dates: 'Incoming Winter 2027', description: '' },
   { company: 'Spyder Controls Corp.', logo: '/logos/spyder_controls_corp_logo.jpg', position: 'Mechatronics Lab Technician', dates: 'Aug 2025 - Dec 2025', description: 'Building and wiring test jigs and testing chambers, troubleshooting circuits, testing sensors along with ics and new products, collaboration with integration team to resolve firmware malfunction' },
   { company: 'University of Waterloo', logo: '/logos/uwaterloo_logo.jpg', position: 'Mechanical Engineer', dates: 'Jan 2025 - Apr 2025', description: 'Laser cutter, Water jet and 3D printer operations' },
 ]
