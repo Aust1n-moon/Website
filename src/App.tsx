@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import './App.css'
 
 const internships = [
@@ -288,6 +289,7 @@ function App() {
         <Route path="/projects" element={<ProjectsPage />} />
       </Routes>
       <ScrollBar />
+      <Analytics />
     </BrowserRouter>
   )
 }
