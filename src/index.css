@@ -7,23 +7,25 @@
 }
 
 :root {
-  --mask: #0e3a2c;
-  --mask-deep: #082419;
-  --silk: #e8ede6;
-  --muted: #8fb3a2;
-  --gold: #c8a24a;
-  --copper: #2c6b52;
-  color-scheme: dark;
+  --bg: light-dark(#ffffff, #000000);
+  --text: light-dark(#171717, #ededed);
+  --muted: light-dark(#6b6b6b, #9a9a9a);
+  --rule: light-dark(#e5e5e5, #262626);
+  --glow: light-dark(rgba(140, 130, 255, 0.14), rgba(140, 130, 255, 0.10));
+  color-scheme: light dark;
 }
+
+:root[data-theme='light'] { color-scheme: light; }
+:root[data-theme='dark'] { color-scheme: dark; }
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Archivo', system-ui, sans-serif;
-  background: var(--mask);
-  color: var(--silk);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg) radial-gradient(60rem 30rem at 15% -5%, var(--glow), transparent 70%) no-repeat;
+  color: var(--text);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
@@ -33,8 +35,9 @@ a {
   text-decoration: none;
 }
 
-a:focus-visible {
-  outline: 2px solid var(--gold);
+a:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--text);
   outline-offset: 4px;
 }
 
