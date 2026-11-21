@@ -6,26 +6,12 @@
   box-sizing: border-box;
 }
 
-/* Hide native scrollbar — custom overlay replaces it */
-html {
-  scrollbar-width: none;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
 :root {
-  --bg: #0a0a0a;
-  --surface: #141414;
-  --surface-hover: #1e1e1e;
-  --border: #2a2a2a;
-  --text: #e4e4e7;
-  --text-muted: #a1a1aa;
-  --accent: #3b82f6;
-  --accent-hover: #60a5fa;
-  --nav-bg: rgba(10, 10, 10, 0.85);
-  --shadow-hover: rgba(59, 130, 246, 0.08);
+  --bg: #000000;
+  --text: #ededed;
+  --muted: #9a9a9a;
+  --rule: #262626;
+  color-scheme: dark;
 }
 
 html {
@@ -33,19 +19,52 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
-  line-height: 1.6;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
-  transition: background 0.3s, color 0.3s;
+  /* Inherited by all text so it stays readable over the stars and moon */
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: url('/stars.svg') 0 0 / 1400px 1400px;
+}
+
+.shooting-star {
+  position: absolute;
+  width: 140px;
+  height: 1px;
+  border-radius: 1px;
+  /* Bright head on the left, tail fading up and to the right */
+  background: linear-gradient(to right, #fff, transparent);
+  transform-origin: left center;
+  animation: shoot 0.9s ease-in forwards;
+}
+
+@keyframes shoot {
+  0% { opacity: 0; transform: rotate(-30deg) translateX(0); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(-30deg) translateX(var(--dist)); }
 }
 
 a {
-  color: var(--accent);
+  color: inherit;
   text-decoration: none;
 }
 
-a:hover {
-  color: var(--accent-hover);
+a:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }

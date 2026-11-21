@@ -1,21 +1,13 @@
-/* Layout */
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-/* Nav */
+/* Top bar */
 nav {
   position: fixed;
   top: 0;
   width: 100%;
-  background: transparent;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
   z-index: 100;
-  padding: 1rem 0;
   transition: transform 0.3s;
 }
 
@@ -23,39 +15,31 @@ nav.nav-hidden {
   transform: translateY(-100%);
 }
 
-nav .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 100%;
-  padding: 0 2.5rem;
-}
-
-nav a {
-  color: var(--text-muted);
+nav a,
+.nav-links a,
+.resume-menu summary {
+  color: var(--muted);
   font-size: 0.9rem;
   transition: color 0.2s;
 }
 
 nav a:hover,
-nav a.active {
-  color: #ffffff;
-}
-
-nav a.active {
-  font-weight: 500;
-}
-
-nav .nav-links {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
+.nav-links a:hover,
+.resume-menu:hover summary,
+.resume-menu[open] summary {
+  color: var(--text);
 }
 
 nav .name {
   font-weight: 600;
+  font-size: 1rem;
   color: var(--text);
-  font-size: 1.1rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
 }
 
 .nav-icon {
@@ -70,17 +54,10 @@ nav .name {
 .resume-menu summary {
   list-style: none;
   cursor: pointer;
-  color: var(--text-muted);
-  transition: color 0.2s;
 }
 
 .resume-menu summary::-webkit-details-marker {
   display: none;
-}
-
-.resume-menu:hover summary,
-.resume-menu[open] summary {
-  color: #ffffff;
 }
 
 .resume-dropdown {
@@ -88,9 +65,13 @@ nav .name {
   position: absolute;
   right: 0;
   top: 100%;
-  padding-top: 0.75rem;
+  margin-top: 0.75rem;
   flex-direction: column;
   white-space: nowrap;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .resume-menu:hover .resume-dropdown,
@@ -99,658 +80,358 @@ nav .name {
 }
 
 .resume-dropdown a {
-  background: var(--nav-bg);
   padding: 0.5rem 1rem;
 }
 
-
-/* Sections */
-section {
-  padding: 3rem 0;
-  padding-top: 6rem;
+/* Page */
+main {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
-.page-section {
+/* The photo fills the width on desktop (and 1.5x the screen height on narrow screens); a dark disc continues the moon below it */
+.hero {
+  --w: max(100vw, 150svh);
+  /* Where the moon's rim sits, just under the text */
+  --rim: 49svh;
   position: relative;
-  overflow: hidden;
-  min-height: 100vh;
-  padding-bottom: 4rem;
-}
-
-.page-content {
-  position: relative;
-  z-index: 1;
-}
-
-.section-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  color: var(--text);
-}
-
-.section-subtitle {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-bottom: 1rem;
-  margin-top: 1.5rem;
-}
-
-/* Scroll animation */
-.fade-in {
-  opacity: 0;
-  transform: translateY(24px);
-  filter: blur(8px);
-  transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease;
-}
-
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-  filter: blur(0);
-}
-
-/* Page content area */
-.page-wrap {
-  min-height: calc(100vh - 8rem);
+  /* Below the page content, which would otherwise paint under the moon's silhouette */
+  z-index: -1;
+  /* Toolbar-hidden height, so the next section never peeks in on mobile */
+  height: 100lvh;
   display: flex;
   flex-direction: column;
-}
-
-/* Profile */
-.profile-wrapper {
-  position: relative;
-  overflow: hidden;
-}
-
-.profile-wrapper > .flow-lines {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200vh;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.profile-bg {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.profile-bg img {
-  height: 100%;
-  width: auto;
-  object-position: center top;
-  filter: grayscale(1);
-  opacity: 0.3;
-}
-
-.profile-hero {
-  position: relative;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 0 2rem;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.profile-about {
-  position: relative;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 4rem 2rem;
-}
-
-.profile-bottom {
-  display: flex;
-  gap: 4rem;
-  align-items: flex-start;
-  z-index: 1;
-}
-
-.profile-bio,
-.profile-stack {
-  max-width: 940px;
-}
-
-.profile-info {
-  position: relative;
-  z-index: 1;
+  padding: 0 1.5rem;
   text-align: center;
+  /* Clip the sides only, so the silhouette continues below the hero */
+  overflow-x: clip;
 }
 
-.profile-info h1 {
-  font-size: 4.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  white-space: nowrap;
+/* Circle measured from the 1920x1280 photo (center 960, 1142; radius 924), as fractions of its width; color sampled from its dark side */
+.hero::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(var(--rim) + var(--w) * 0.0008);
+  width: calc(var(--w) * 0.9625);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgb(1, 3, 7);
+  transform: translateX(-50%);
 }
 
-.profile-info .tagline {
-  font-size: 1.8rem;
-  color: var(--text-muted);
+/* The rim is 11.27% of the photo's width below its top edge */
+.hero img {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--rim) - var(--w) * 0.1127);
+  width: var(--w);
+  transform: translateX(-50%);
 }
 
-.profile-bio h3 {
-  font-size: 1.4rem;
+.hero h1,
+.hero .bio {
+  position: relative;
+  /* Keeps the text readable where it crosses the moon's surface */
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 10vw, 7rem);
   font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.hero .bio {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.95);
+}
+
+/* Browsers without scroll-driven animations just scroll the hero away */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero {
+      view-timeline: --hero;
+    }
+
+    /* Fade the children, not .hero, so the silhouette can outlast them */
+    .hero img,
+    .hero h1,
+    .hero .bio {
+      animation: fade-out linear both;
+      animation-timeline: --hero;
+      animation-range: exit;
+    }
+
+    /* Silhouette stays solid while the hero is mostly on screen and is gone once it leaves */
+    .hero::before {
+      animation: fade-out linear both;
+      animation-timeline: scroll(root);
+      animation-range: 60svh 100svh;
+    }
+  }
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
 }
 
 .bio {
-  color: var(--text-muted);
-  line-height: 1.8;
-  font-size: 1.05rem;
-  background: rgba(20, 20, 20, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 2rem;
+  margin-top: 1rem;
+  font-size: 1.15rem;
+  color: var(--muted);
 }
 
-.bio p {
-  margin-bottom: 1rem;
+section {
+  padding-top: 4rem;
 }
 
-.bio p:last-child {
-  margin-bottom: 0;
+h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
 }
 
-.scroll-indicator {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+.list {
+  list-style: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  opacity: 0.5;
-  animation: bobDown 2s ease-in-out infinite;
-  z-index: 1;
+  gap: 1.4rem;
 }
 
-@keyframes bobDown {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(6px); }
-}
-
-.profile-stack h3 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: var(--text);
-}
-
-.stack-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
-}
-
-.stack-tag {
-  font-size: 0.95rem;
-  padding: 0.4rem 1rem;
-  background: rgba(20, 20, 20, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-}
-
-/* Flow lines */
-.flow-lines {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.flow {
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 1.2;
-  stroke-linecap: round;
-}
-
-.flow-1  { opacity: 0.3; }
-.flow-2  { opacity: 0.2; }
-.flow-3  { opacity: 0.18; }
-.flow-4  { opacity: 0.25; }
-.flow-5  { opacity: 0.22; }
-.flow-6  { opacity: 0.18; }
-.flow-7  { opacity: 0.15; }
-.flow-8  { opacity: 0.2; }
-.flow-9  { opacity: 0.18; }
-.flow-10 { opacity: 0.15; }
-.flow-11 { opacity: 0.14; }
-.flow-12 { opacity: 0.16; }
-.flow-13 { opacity: 0.12; }
-.flow-14 { opacity: 0.1; }
-.flow-15 { opacity: 0.12; }
-.flow-16 { opacity: 0.1; }
-.flow-17 { opacity: 0.12; }
-.flow-18 { opacity: 0.08; }
-.flow-19 { opacity: 0.07; }
-.flow-20 { opacity: 0.05; }
-.flow-x1 { opacity: 0.15; }
-.flow-x2 { opacity: 0.12; }
-.flow-x3 { opacity: 0.1; }
-
-.flow-dashed {
-  stroke-dasharray: 12 8;
-}
-
-.flow-dot {
-  fill: #ffffff;
-  opacity: 0.5;
-}
-
-.dot-1 { opacity: 0.5; }
-.dot-2 { opacity: 0.4; }
-.dot-3 { opacity: 0.3; }
-.dot-4 { opacity: 0.45; }
-.dot-5 { opacity: 0.35; }
-
-
-/* Cards (shared for experience + projects) */
-.card {
-  background: rgba(20, 20, 20, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  transition: all 0.25s ease;
-  cursor: default;
-}
-
-.project-card:hover,
-.exp-card:hover {
-  border-color: var(--accent);
-  background: var(--surface-hover);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px var(--shadow-hover);
-}
-
-/* Experience */
-.exp-card {
-  display: flex;
-  gap: 1.25rem;
-  align-items: flex-start;
-}
-
-.exp-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.exp-info {
-  flex: 1;
-}
-
-.exp-info .dates,
-.exp-info .description {
-  animation: expandIn 0.25s ease;
-}
-
-@keyframes expandIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.exp-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background: var(--border);
-  flex-shrink: 0;
+.row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-weight: 700;
+  gap: 1rem;
   font-size: 1.1rem;
-  color: var(--accent);
+}
+
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.row .muted {
+  font-size: 0.95rem;
+}
+
+.end {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.role {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.role > div {
   overflow: hidden;
 }
 
-.exp-logo img {
-  width: 100%;
-  height: 100%;
+/* Keep logo, name and dates on one line while the role box opens below */
+/* Negative margins keep the text aligned with the headings; the padding is room for the hover box */
+.role-row,
+.project-row {
+  align-items: flex-start;
+}
+
+.role-row,
+.project-row {
+  /* Rows set --row-accent from their logo or category; rows without one get moonlight blue, which stands apart from white logo tiles. Mixing in white softens the colors */
+  --hi: color-mix(in srgb, var(--row-accent, #b8c8f0) 75%, #fff);
+  padding: 0.5rem 0.75rem;
+  margin: -0.5rem -0.75rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.project-row:hover,
+.project-row:focus-within {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.role-row:hover,
+.role-row:focus,
+.project-row:hover,
+.project-row:focus-within {
+  border-color: var(--hi);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--hi) 30%, transparent),
+    0 0 18px 4px color-mix(in srgb, var(--hi) 25%, transparent);
+}
+
+.role-row .grow > p {
+  padding-top: 0.28rem;
+}
+
+.role-row .end {
+  line-height: 2.25rem;
+}
+
+.desc {
+  margin-top: 0.2rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.role-row:hover .role,
+.role-row:focus .role,
+.project-row:hover .role,
+.project-row:focus-within .role {
+  grid-template-rows: 1fr;
+}
+
+.role-row:focus,
+.project-row:focus {
+  outline: none;
+}
+
+.role-row:focus-visible {
+  border-color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role { transition: none; }
+  .project-row:hover,
+  .project-row:focus-within { transform: none; }
+}
+
+.logo {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  flex-shrink: 0;
   object-fit: cover;
+  /* Shows behind logos with transparent backgrounds */
+  background: #fff;
+  border: 1px solid var(--rule);
 }
 
-.exp-info h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
+.link {
+  border-bottom: 1px solid var(--rule);
+  transition: border-color 0.2s;
 }
 
-.exp-info .position {
-  color: var(--accent);
-  font-size: 0.95rem;
-  margin-bottom: 0.35rem;
+a:hover .link {
+  border-color: var(--text);
 }
 
-.exp-info .dates {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  margin-bottom: 0.5rem;
-  white-space: nowrap;
-}
-
-.exp-info .description {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-}
-
-/* Experience detail */
-.back-btn {
-  background: none;
-  border: none;
-  color: var(--accent);
-  cursor: pointer;
-  font-size: 0.95rem;
-  padding: 0.5rem 0;
-  margin-bottom: 1.5rem;
+/* The main line of the highlighted box takes its row color */
+.role-row .grow > p,
+.project-row .grow > a {
   transition: color 0.2s;
 }
 
-.back-btn:hover {
-  color: var(--accent-hover);
+.role-row:hover .grow > p,
+.role-row:focus .grow > p,
+.project-row:hover .grow > a,
+.project-row:focus-within .grow > a {
+  color: var(--hi);
 }
 
-.exp-detail {
-  text-align: center;
+.project-row:hover .link,
+.project-row:focus-within .link {
+  border-color: var(--hi);
 }
 
-.exp-detail h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
+/* Details brighten to white on hover */
+.row .muted,
+.desc {
+  transition: color 0.2s;
 }
 
-.exp-detail .position {
-  color: var(--accent);
-  font-size: 1.1rem;
-  margin-bottom: 0.25rem;
+.role-row:hover .muted,
+.role-row:focus .muted,
+.role-row:hover .desc,
+.role-row:focus .desc,
+.project-row:hover .desc,
+.project-row:focus-within .desc {
+  color: var(--text);
 }
 
-.exp-detail .dates {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
-}
-
-.exp-detail .description {
-  color: var(--text-muted);
-  font-size: 1rem;
-  line-height: 1.8;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.exp-logo-lg {
-  width: 72px;
-  height: 72px;
-  font-size: 1.8rem;
-  margin: 0 auto 1rem;
-}
-
-.exp-card h3 .arrow {
-  opacity: 0;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.exp-card:hover h3 .arrow {
-  opacity: 1;
-  transform: translateX(4px);
-}
-
-.exp-card h3 .arrow-down {
-  opacity: 1;
-  transform: rotate(90deg);
-}
-
-/* Projects */
-a .project-card {
-  cursor: pointer;
-}
-
-.project-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 0.35rem;
-}
-
-.project-card h3 {
-  font-size: 1.1rem;
+/* Company and role go bold on hover; the color stays on the company name */
+.role-row:hover .grow > p,
+.role-row:focus .grow > p,
+.role-row:hover .role .muted,
+.role-row:focus .role .muted {
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--accent);
 }
 
-.project-card h3 .arrow {
-  opacity: 0;
-  transition: opacity 0.2s, transform 0.2s;
+/* The tag takes the project's color, so the color reads as its category */
+.project-row:hover .muted,
+.project-row:focus-within .muted {
+  color: var(--hi);
 }
 
-.project-card:hover h3 .arrow {
-  opacity: 1;
-  transform: translateX(4px);
-}
-
-.project-tag {
+.arrow {
   display: inline-block;
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
+  transition: transform 0.2s;
 }
 
-.project-card p {
-  color: var(--text-muted);
-  font-size: 0.95rem;
+.project-row:hover .arrow,
+.project-row:focus-within .arrow {
+  transform: translate(3px, -3px);
 }
 
-/* Custom scrollbar */
-.custom-scrollbar {
-  position: fixed;
-  top: 0;
-  right: 3px;
-  width: 4px;
-  height: 100vh;
-  z-index: 200;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+@media (prefers-reduced-motion: reduce) {
+  .project-row:hover .arrow,
+  .project-row:focus-within .arrow { transform: none; }
 }
 
-.custom-scrollbar.show {
-  opacity: 1;
-}
-
-.custom-scrollbar-thumb {
-  position: absolute;
-  width: 100%;
-  background: rgba(128, 128, 128, 0.5);
-  border-radius: 2px;
-  transition: opacity 0.4s ease;
-}
-
-/* Footer */
 footer {
+  margin-top: 5rem;
+  padding: 2rem 0 3rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
   text-align: center;
-  padding: 3rem 0;
-  color: var(--text-muted);
-  font-size: 0.8rem;
 }
 
+footer .nav-links {
+  justify-content: center;
+  margin-top: 1rem;
+}
 
-/* Responsive */
-@media (max-width: 600px) {
-  /* Nav */
-  nav .container {
-    padding: 0 1rem;
+/* At the bottom of the page the resume menu opens upward */
+footer .resume-dropdown {
+  top: auto;
+  bottom: 100%;
+  right: auto;
+  left: 50%;
+  margin: 0 0 0.75rem;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 560px) {
+  nav {
+    padding: 1rem 1.25rem;
   }
 
-  nav .nav-links {
-    gap: 0.5rem;
+  h2 {
+    text-align: center;
   }
 
-  nav .nav-links a {
-    font-size: 0.75rem;
-  }
-
-  nav .name {
-    font-size: 0.95rem;
-  }
-
-  /* Profile hero */
-  .profile-hero {
-    padding: 4rem 1.25rem 2rem;
-  }
-
-  .profile-info h1 {
-    font-size: 2.5rem;
-  }
-
-  .profile-info .tagline {
-    font-size: 1.1rem;
-  }
-
-  .profile-bg {
-    width: 100%;
-  }
-
-  .profile-bg img {
-    opacity: 0.2;
-  }
-
-  .scroll-indicator {
-    font-size: 0.65rem;
-    bottom: 1.5rem;
-  }
-
-  /* Profile about */
-  .profile-about {
-    padding: 3rem 1.25rem;
-    min-height: auto;
-  }
-
-  .profile-bottom {
+  /* Stack logo, name and dates in one centered column */
+  .row {
     flex-direction: column;
-    gap: 2rem;
+    align-items: center;
+    row-gap: 0.4rem;
+    text-align: center;
   }
 
-  .profile-bio h3,
-  .profile-stack h3 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-
-  .bio {
-    font-size: 0.95rem;
-    padding: 1.25rem;
-  }
-
-  .stack-tag {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.75rem;
-  }
-
-  /* Sections */
-  section {
-    padding-top: 4.5rem;
-  }
-
-  .section-title {
-    font-size: 1.6rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .section-subtitle {
-    font-size: 1rem;
-  }
-
-  .container {
-    padding: 0 1.25rem;
-  }
-
-  /* Experience cards */
-  .exp-card {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .exp-header {
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .exp-info h3 {
-    font-size: 1rem;
-  }
-
-  .exp-info .position {
-    font-size: 0.85rem;
-  }
-
-  .exp-info .dates {
-    font-size: 0.8rem;
-  }
-
-  .exp-info .description {
-    font-size: 0.85rem;
-  }
-
-  .exp-logo {
-    width: 40px;
-    height: 40px;
-  }
-
-  /* Project cards */
-  .project-header {
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .project-card h3 {
-    font-size: 1rem;
-  }
-
-  .project-card p {
-    font-size: 0.85rem;
-  }
-
-  .project-tag {
-    font-size: 0.7rem;
-  }
-
-  .card {
-    padding: 1.25rem;
+  .row .end {
+    text-align: center;
+    line-height: inherit;
   }
 }
