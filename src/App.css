@@ -184,12 +184,13 @@ main {
     .hero::before {
       animation: fade-out linear both, moon-drift linear both;
       animation-timeline: scroll(root), --hero;
-      animation-range: 60svh 100svh, exit;
+      animation-range: 0 100svh, exit;
     }
   }
 }
 
 @keyframes fade-out {
+  40% { opacity: 1; }
   to { opacity: 0; }
 }
 
