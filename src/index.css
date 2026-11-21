@@ -7,16 +7,12 @@
 }
 
 :root {
-  --bg: light-dark(#ffffff, #000000);
-  --text: light-dark(#171717, #ededed);
-  --muted: light-dark(#6b6b6b, #9a9a9a);
-  --rule: light-dark(#e5e5e5, #262626);
-  --glow: light-dark(rgba(140, 130, 255, 0.14), rgba(140, 130, 255, 0.10));
-  color-scheme: light dark;
+  --bg: #000000;
+  --text: #ededed;
+  --muted: #9a9a9a;
+  --rule: #262626;
+  color-scheme: dark;
 }
-
-:root[data-theme='light'] { color-scheme: light; }
-:root[data-theme='dark'] { color-scheme: dark; }
 
 html {
   scroll-behavior: smooth;
@@ -24,10 +20,38 @@ html {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg) radial-gradient(60rem 30rem at 15% -5%, var(--glow), transparent 70%) no-repeat;
+  background: var(--bg);
   color: var(--text);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  /* Inherited by all text so it stays readable over the stars and moon */
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: url('/stars.svg') 0 0 / 1400px 1400px;
+}
+
+.shooting-star {
+  position: absolute;
+  width: 140px;
+  height: 1px;
+  border-radius: 1px;
+  /* Bright head on the left, tail fading up and to the right */
+  background: linear-gradient(to right, #fff, transparent);
+  transform-origin: left center;
+  animation: shoot 0.9s ease-in forwards;
+}
+
+@keyframes shoot {
+  0% { opacity: 0; transform: rotate(-30deg) translateX(0); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(-30deg) translateX(var(--dist)); }
 }
 
 a {

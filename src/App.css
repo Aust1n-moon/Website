@@ -7,8 +7,6 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2.5rem;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   z-index: 100;
   transition: transform 0.3s;
 }
@@ -18,6 +16,7 @@ nav.nav-hidden {
 }
 
 nav a,
+.nav-links a,
 .resume-menu summary {
   color: var(--muted);
   font-size: 0.9rem;
@@ -25,6 +24,7 @@ nav a,
 }
 
 nav a:hover,
+.nav-links a:hover,
 .resume-menu:hover summary,
 .resume-menu[open] summary {
   color: var(--text);
@@ -45,18 +45,6 @@ nav .name {
 .nav-icon {
   display: flex;
   align-items: center;
-}
-
-.theme-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--muted);
-  transition: color 0.2s;
-}
-
-.theme-toggle:hover {
-  color: var(--text);
 }
 
 .resume-menu {
@@ -99,12 +87,98 @@ nav .name {
 main {
   max-width: 46rem;
   margin: 0 auto;
-  padding: 7rem 1.5rem 0;
+  padding: 0 1.5rem;
 }
 
-h1 {
-  font-size: 1.5rem;
+/* The photo fills the width on desktop (and 1.5x the screen height on narrow screens); a dark disc continues the moon below it */
+.hero {
+  --w: max(100vw, 150svh);
+  /* Where the moon's rim sits, just under the text */
+  --rim: 49svh;
+  position: relative;
+  /* Below the page content, which would otherwise paint under the moon's silhouette */
+  z-index: -1;
+  /* Toolbar-hidden height, so the next section never peeks in on mobile */
+  height: 100lvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1.5rem;
+  text-align: center;
+  /* Clip the sides only, so the silhouette continues below the hero */
+  overflow-x: clip;
+}
+
+/* Circle measured from the 1920x1280 photo (center 960, 1142; radius 924), as fractions of its width; color sampled from its dark side */
+.hero::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(var(--rim) + var(--w) * 0.0008);
+  width: calc(var(--w) * 0.9625);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgb(1, 3, 7);
+  transform: translateX(-50%);
+}
+
+/* The rim is 11.27% of the photo's width below its top edge */
+.hero img {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--rim) - var(--w) * 0.1127);
+  width: var(--w);
+  transform: translateX(-50%);
+}
+
+.hero h1,
+.hero .bio {
+  position: relative;
+  /* Keeps the text readable where it crosses the moon's surface */
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 10vw, 7rem);
   font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.hero .bio {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.95);
+}
+
+/* Browsers without scroll-driven animations just scroll the hero away */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero {
+      view-timeline: --hero;
+    }
+
+    /* Fade the children, not .hero, so the silhouette can outlast them */
+    .hero img,
+    .hero h1,
+    .hero .bio {
+      animation: fade-out linear both;
+      animation-timeline: --hero;
+      animation-range: exit;
+    }
+
+    /* Silhouette stays solid while the hero is mostly on screen and is gone once it leaves */
+    .hero::before {
+      animation: fade-out linear both;
+      animation-timeline: scroll(root);
+      animation-range: 60svh 100svh;
+    }
+  }
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
 }
 
 .bio {
@@ -165,6 +239,47 @@ h2 {
   overflow: hidden;
 }
 
+/* Keep logo, name and dates on one line while the role box opens below */
+/* Negative margins keep the text aligned with the headings; the padding is room for the hover box */
+.role-row,
+.project-row {
+  align-items: flex-start;
+}
+
+.role-row,
+.project-row {
+  /* Rows set --row-accent from their logo or category; rows without one get moonlight blue, which stands apart from white logo tiles. Mixing in white softens the colors */
+  --hi: color-mix(in srgb, var(--row-accent, #b8c8f0) 75%, #fff);
+  padding: 0.5rem 0.75rem;
+  margin: -0.5rem -0.75rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.project-row:hover,
+.project-row:focus-within {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.role-row:hover,
+.role-row:focus,
+.project-row:hover,
+.project-row:focus-within {
+  border-color: var(--hi);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--hi) 30%, transparent),
+    0 0 18px 4px color-mix(in srgb, var(--hi) 25%, transparent);
+}
+
+.role-row .grow > p {
+  padding-top: 0.28rem;
+}
+
+.role-row .end {
+  line-height: 2.25rem;
+}
+
 .desc {
   margin-top: 0.2rem;
   font-size: 0.95rem;
@@ -172,22 +287,25 @@ h2 {
 }
 
 .role-row:hover .role,
-.role-row:focus .role {
+.role-row:focus .role,
+.project-row:hover .role,
+.project-row:focus-within .role {
   grid-template-rows: 1fr;
 }
 
-.role-row:focus {
+.role-row:focus,
+.project-row:focus {
   outline: none;
 }
 
 .role-row:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 6px;
-  border-radius: 4px;
+  border-color: var(--text);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .role { transition: none; }
+  .project-row:hover,
+  .project-row:focus-within { transform: none; }
 }
 
 .logo {
@@ -196,6 +314,8 @@ h2 {
   border-radius: 8px;
   flex-shrink: 0;
   object-fit: cover;
+  /* Shows behind logos with transparent backgrounds */
+  background: #fff;
   border: 1px solid var(--rule);
 }
 
@@ -208,6 +328,68 @@ a:hover .link {
   border-color: var(--text);
 }
 
+/* The main line of the highlighted box takes its row color */
+.role-row .grow > p,
+.project-row .grow > a {
+  transition: color 0.2s;
+}
+
+.role-row:hover .grow > p,
+.role-row:focus .grow > p,
+.project-row:hover .grow > a,
+.project-row:focus-within .grow > a {
+  color: var(--hi);
+}
+
+.project-row:hover .link,
+.project-row:focus-within .link {
+  border-color: var(--hi);
+}
+
+/* Details brighten to white on hover */
+.row .muted,
+.desc {
+  transition: color 0.2s;
+}
+
+.role-row:hover .muted,
+.role-row:focus .muted,
+.role-row:hover .desc,
+.role-row:focus .desc,
+.project-row:hover .desc,
+.project-row:focus-within .desc {
+  color: var(--text);
+}
+
+/* Company and role go bold on hover; the color stays on the company name */
+.role-row:hover .grow > p,
+.role-row:focus .grow > p,
+.role-row:hover .role .muted,
+.role-row:focus .role .muted {
+  font-weight: 600;
+}
+
+/* The tag takes the project's color, so the color reads as its category */
+.project-row:hover .muted,
+.project-row:focus-within .muted {
+  color: var(--hi);
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+.project-row:hover .arrow,
+.project-row:focus-within .arrow {
+  transform: translate(3px, -3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-row:hover .arrow,
+  .project-row:focus-within .arrow { transform: none; }
+}
+
 footer {
   margin-top: 5rem;
   padding: 2rem 0 3rem;
@@ -216,23 +398,40 @@ footer {
   text-align: center;
 }
 
+footer .nav-links {
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* At the bottom of the page the resume menu opens upward */
+footer .resume-dropdown {
+  top: auto;
+  bottom: 100%;
+  right: auto;
+  left: 50%;
+  margin: 0 0 0.75rem;
+  transform: translateX(-50%);
+}
+
 @media (max-width: 560px) {
   nav {
     padding: 1rem 1.25rem;
   }
 
+  h2 {
+    text-align: center;
+  }
+
+  /* Stack logo, name and dates in one centered column */
   .row {
-    flex-wrap: wrap;
-    align-items: flex-start;
-    row-gap: 0.1rem;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 0.4rem;
+    text-align: center;
   }
 
   .row .end {
-    flex-basis: 100%;
-    text-align: left;
-  }
-
-  .logo ~ .end {
-    padding-left: 3.25rem;
+    text-align: center;
+    line-height: inherit;
   }
 }
