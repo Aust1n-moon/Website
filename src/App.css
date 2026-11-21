@@ -89,10 +89,19 @@ nav .name {
 }
 
 /* Page */
+/* At least one screen tall, so the page always scrolls far enough for the moon to fade out */
 main {
   max-width: 46rem;
+  min-height: 100lvh;
   margin: 0 auto;
   padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Takes the spare height on tall screens, so the footer sits at the bottom */
+main > section:last-of-type {
+  margin-bottom: auto;
 }
 
 /* The photo fills the width on desktop (and 1.5x the screen height on narrow screens); a dark disc continues the moon below it */
@@ -176,8 +185,8 @@ main {
     .hero img {
       animation: fade-out linear both, moon-drift linear both;
       /* One value per animation: Chrome finishes both at once when a single value is shared */
-      animation-timeline: --hero, --hero;
-      animation-range: exit, exit;
+      animation-timeline: scroll(root), --hero;
+      animation-range: 0 100lvh, exit;
     }
 
     /* Silhouette stays solid while the hero is mostly on screen and is gone once it leaves */
