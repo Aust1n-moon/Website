@@ -83,6 +83,11 @@ nav .name {
   padding: 0.5rem 1rem;
 }
 
+/* Ends the page at its content, not at the drifted moon's silhouette */
+#root {
+  overflow: clip;
+}
+
 /* Page */
 main {
   max-width: 46rem;
@@ -160,7 +165,6 @@ main {
     }
 
     /* Fade the children, not .hero, so the silhouette can outlast them */
-    .hero img,
     .hero h1,
     .hero .bio {
       animation: fade-out linear both;
@@ -168,17 +172,31 @@ main {
       animation-range: exit;
     }
 
+    /* The moon drifts down half as far as the hero scrolls, so it moves at half speed */
+    .hero img {
+      animation: fade-out linear both, moon-drift linear both;
+      /* One value per animation: Chrome finishes both at once when a single value is shared */
+      animation-timeline: --hero, --hero;
+      animation-range: exit, exit;
+    }
+
     /* Silhouette stays solid while the hero is mostly on screen and is gone once it leaves */
     .hero::before {
-      animation: fade-out linear both;
-      animation-timeline: scroll(root);
-      animation-range: 60svh 100svh;
+      animation: fade-out linear both, moon-drift linear both;
+      animation-timeline: scroll(root), --hero;
+      animation-range: 0 100svh, exit;
     }
   }
 }
 
 @keyframes fade-out {
+  40% { opacity: 1; }
   to { opacity: 0; }
+}
+
+/* translate, not transform, so the centering translateX stays */
+@keyframes moon-drift {
+  to { translate: 0 50lvh; }
 }
 
 .bio {
