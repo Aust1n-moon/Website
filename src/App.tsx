@@ -70,7 +70,7 @@ function useShootingStars(sky: RefObject<HTMLDivElement | null>) {
   }, [sky])
 }
 
-// Roams at a capped speed like zero gravity, heading for the mouse while it moves; on wide screens it keeps to the left gutter
+// Roams at a capped speed like zero gravity, heading for the mouse while it moves; on wide mouse-driven screens it keeps to the left gutter
 function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<SVGPathElement | null>) {
   useEffect(() => {
     const a = el.current
@@ -91,6 +91,8 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
     let last = performance.now()
     let frame = 0
     const main = document.querySelector('main')
+    // Touch devices (phones, iPads) roam the whole screen; only mouse-driven screens use the gutter
+    const mouseFirst = matchMedia('(pointer: fine)').matches
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse') return
       tx = e.clientX
@@ -110,9 +112,9 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
         tx = innerWidth * 0.4
         ty = innerHeight * 0.45
       }
-      // On wide screens he stays in the left gutter beside the text; it ends 12px into main's 24px padding
+      // On wide desktop screens he stays in the left gutter beside the text; it ends 12px into main's 24px padding
       const right = (main?.getBoundingClientRect().left ?? 0) + 12
-      const gutter = right >= 120
+      const gutter = mouseFirst && right >= 120
       const maxX = gutter ? right - w : innerWidth - w
       const dx = Math.min(tx - w / 2, maxX) - x
       const dy = ty - h / 2 - y
