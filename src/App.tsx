@@ -141,10 +141,10 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
 
 // Oxygen hose from off-screen on the upper left to the backpack; inner points sway on their own slow waves so it never runs straight
 function hosePath(cx: number, cy: number, w: number, h: number, turnDeg: number, t: number) {
-  // Backpack sits at about (40%, 15%) of the image, rotated with the astronaut
+  // Backpack sits at about (62%, 25%) of the image, rotated with the astronaut
   const r = (turnDeg * Math.PI) / 180
-  const ox = -0.1 * w
-  const oy = -0.35 * h
+  const ox = 0.12 * w
+  const oy = -0.25 * h
   const ex = cx + ox * Math.cos(r) - oy * Math.sin(r)
   const ey = cy + ox * Math.sin(r) + oy * Math.cos(r)
   const sx = -10

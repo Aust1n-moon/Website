@@ -203,9 +203,11 @@ main > section:last-of-type {
   top: 0;
   left: 0;
   z-index: -1;
-  width: 90px;
+  width: 70px;
   opacity: 0;
   transition: opacity 1.5s;
+  /* Tones down the white suit so it doesn't pop against the dark sky */
+  filter: brightness(0.8);
   pointer-events: none;
 }
 
@@ -220,7 +222,7 @@ main > section:last-of-type {
 
 .hose path {
   fill: none;
-  stroke: #fff;
+  stroke: #c8c8c8;
   stroke-width: 2.5;
   stroke-linecap: round;
   opacity: 0;
@@ -229,7 +231,7 @@ main > section:last-of-type {
 
 @media (max-width: 640px) {
   .astronaut {
-    width: 64px;
+    width: 50px;
   }
 }
 
