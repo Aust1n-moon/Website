@@ -124,7 +124,8 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
         const dir = (Math.atan2(ax, -ay) * 180) / Math.PI
         // Nearly straight below: stay on the current side instead of swinging across; otherwise less the helmet's 29 degree lean in the image
         const want = Math.abs(dir) > 150 ? (aim >= 0 ? 45 : -45) : Math.min(Math.max(dir - 29, -45), 45)
-        aim += (want - aim) * (1 - 0.985 ** frames)
+        // Slow turn: eases over a few seconds and never faster than 12 degrees a second
+        aim += Math.min(Math.max((want - aim) * (1 - 0.995 ** frames), -0.2 * frames), 0.2 * frames)
       }
       const turn = Math.min(Math.max(aim + 5 * Math.sin(t / 3100), -45), 45)
       a.style.translate = `${x}px ${bobY}px`
