@@ -198,7 +198,6 @@ main > section:last-of-type {
   }
 }
 
-/* The clip is keyed onto pure black, which drops out under screen blending */
 .astronaut {
   position: fixed;
   top: 0;
@@ -208,7 +207,6 @@ main > section:last-of-type {
   opacity: 0;
   transition: opacity 1.5s;
   pointer-events: none;
-  mix-blend-mode: screen;
 }
 
 @media (max-width: 640px) {

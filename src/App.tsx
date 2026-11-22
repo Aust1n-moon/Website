@@ -71,7 +71,7 @@ function useShootingStars(sky: RefObject<HTMLDivElement | null>) {
 }
 
 // Drifts toward the mouse at a capped speed like zero gravity; with no mouse (touch), wanders to random points
-function useAstronaut(el: RefObject<HTMLVideoElement | null>) {
+function useAstronaut(el: RefObject<HTMLImageElement | null>) {
   useEffect(() => {
     const a = el.current
     if (!a || matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -185,16 +185,13 @@ function App() {
   const navHidden = useHideNavOnScroll()
   const skyRef = useRef<HTMLDivElement>(null)
   useShootingStars(skyRef)
-  const astronautRef = useRef<HTMLVideoElement>(null)
+  const astronautRef = useRef<HTMLImageElement>(null)
   useAstronaut(astronautRef)
 
   return (
     <>
       <div className="sky" aria-hidden="true" ref={skyRef} />
-      <video className="astronaut" ref={astronautRef} autoPlay muted loop playsInline aria-hidden="true">
-        <source src="/astronaut.webm" type="video/webm" />
-        <source src="/astronaut.mp4" type="video/mp4" />
-      </video>
+      <img className="astronaut" ref={astronautRef} src="/astronaut.png" alt="" />
       <nav className={navHidden ? 'nav-hidden' : ''}>
         <a href="#top" className="name">Austin Moon</a>
         <SocialLinks />
