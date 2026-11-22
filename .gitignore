@@ -25,3 +25,9 @@ dist-ssr
 
 # docs folder
 docs/
+
+# Vercel CLI
+.vercel
+
+# Env
+.env
