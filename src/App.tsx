@@ -70,13 +70,16 @@ function useShootingStars(sky: RefObject<HTMLDivElement | null>) {
   }, [sky])
 }
 
-// Eases toward the mouse like zero gravity; with no mouse (touch), wanders to random points
+// Drifts toward the mouse at a capped speed like zero gravity; with no mouse (touch), wanders to random points
 function useAstronaut(el: RefObject<HTMLVideoElement | null>) {
   useEffect(() => {
     const a = el.current
     if (!a || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const SPEED = 35 // px per second, however fast the cursor moves
     let x = innerWidth * 0.6
     let y = innerHeight * 0.3
+    let vx = 0
+    let vy = 0
     let tilt = 0
     let spin = 0
     let tx = x
@@ -96,18 +99,25 @@ function useAstronaut(el: RefObject<HTMLVideoElement | null>) {
       ty = Math.random() * innerHeight
     }, 12000)
     const tick = (t: number) => {
-      // Per-frame easing scaled by elapsed time, so speed is the same at any refresh rate
+      // Measured in 60 Hz frames, so motion is the same at any refresh rate
       const frames = Math.min(t - last, 100) / 16.7
       last = t
-      const k = 1 - (1 - 0.0015) ** frames
       const w = a.offsetWidth
       const h = a.offsetHeight
-      const nx = Math.min(Math.max(x + (tx - w / 2 - x) * k, 0), innerWidth - w)
-      y = Math.min(Math.max(y + (ty - h / 2 - y) * k, 0), innerHeight - h)
-      tilt += (Math.min(Math.max((nx - x) / frames * 20, -20), 20) - tilt) * (1 - 0.98 ** frames)
+      const dx = tx - w / 2 - x
+      const dy = ty - h / 2 - y
+      const dist = Math.hypot(dx, dy) || 1
+      // Full speed when far, slowing over the last 100px so it settles instead of stopping dead
+      const speed = (SPEED / 60) * Math.min(1, dist / 100)
+      // Velocity eases toward the target velocity, so starts and turns are gradual
+      const ease = 1 - 0.98 ** frames
+      vx += ((dx / dist) * speed - vx) * ease
+      vy += ((dy / dist) * speed - vy) * ease
+      x = Math.min(Math.max(x + vx * frames, 0), innerWidth - w)
+      y = Math.min(Math.max(y + vy * frames, 0), innerHeight - h)
+      tilt += (Math.min(Math.max(vx * 20, -20), 20) - tilt) * ease
       // One slow turn a minute, like a tumble in zero gravity
       spin += frames * 0.1
-      x = nx
       a.style.translate = `${x}px ${y + Math.sin(t / 1600) * 6}px`
       a.style.rotate = `${spin + tilt}deg`
       frame = requestAnimationFrame(tick)

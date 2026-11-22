@@ -211,7 +211,7 @@ main > section:last-of-type {
   top: 0;
   left: 0;
   z-index: -1;
-  width: 130px;
+  width: 90px;
   opacity: 0;
   pointer-events: none;
   mix-blend-mode: screen;
@@ -219,7 +219,7 @@ main > section:last-of-type {
 
 @media (max-width: 640px) {
   .astronaut {
-    width: 90px;
+    width: 64px;
   }
 }
 
