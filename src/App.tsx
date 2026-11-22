@@ -91,8 +91,9 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
     let lastMouse = -Infinity
     let last = performance.now()
     let frame = 0
+    const hero = document.querySelector<HTMLElement>('.hero')
     const onMove = (e: PointerEvent) => {
-      if (e.pointerType !== 'mouse') return
+      if (e.pointerType !== 'mouse' || waiting) return
       tx = e.clientX
       ty = e.clientY
       lastMouse = performance.now()
@@ -104,7 +105,8 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       const w = a.offsetWidth
       const h = a.offsetHeight
       // Appears once the moon has faded, without needing the page to be any longer
-      const shown = scrollY > innerHeight * 0.95
+      // Measured against the hero, which is the large viewport height the moon fades over
+      const shown = scrollY > (hero?.offsetHeight ?? innerHeight) * 0.95
       if (waiting && shown) {
         waiting = false
         enteredAt = t
@@ -161,7 +163,7 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
   }, [el, hoseEl])
 }
 
-// Oxygen hose from off-screen on the lower left to the astronaut; inner points sway on their own slow waves so it never runs straight
+// Oxygen hose from off-screen on the left edge to the astronaut; inner points sway on their own slow waves so it never runs straight
 function hosePath(cx: number, cy: number, w: number, h: number, turnDeg: number, t: number) {
   // The hose meets his left hip at about (19%, 68%) of the image, rotated with the astronaut
   const r = (turnDeg * Math.PI) / 180
@@ -253,8 +255,6 @@ function App() {
   return (
     <>
       <div className="sky" aria-hidden="true" ref={skyRef} />
-      <svg className="hose" aria-hidden="true"><path ref={hoseRef} /></svg>
-      <img className="astronaut" ref={astronautRef} src="/astronaut.png" alt="" />
       <nav className={navHidden ? 'nav-hidden' : ''}>
         <a href="#top" className="name">Austin Moon</a>
         <SocialLinks />
@@ -265,6 +265,10 @@ function App() {
         <h1>Austin Moon</h1>
         <p className="bio">Mechatronics + AI @ UWaterloo. Building across AI/ML and Robotics</p>
       </header>
+
+      {/* After the hero so the moon never paints over them; still under the page text */}
+      <svg className="hose" aria-hidden="true"><path ref={hoseRef} /></svg>
+      <img className="astronaut" ref={astronautRef} src="/astronaut.png" alt="" />
 
       <main>
 

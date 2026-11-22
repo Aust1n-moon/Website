@@ -15,9 +15,10 @@ Revision: the video clips (front view, then a waving 3D model) were rejected as 
 ## Design
 - Image: the user's cartoon spacewalker, cut out to a transparent PNG (`public/astronaut.png`, 163 x 154 px) without the tether drawn in the source. Visor and inner lines are solid black. Still image: no limb motion.
 - Size: 60 px wide on desktop, 44 px below 640 px; `aspect-ratio` matches the PNG. `filter: brightness(0.8)` tones down the white.
-- Appear: waits off the left edge. Once scroll passes 95% of a screen, a 1.5 s opacity transition shows it and it floats in at 90 px/s toward 40% across the screen. Does not depend on page length.
-- Motion: `requestAnimationFrame` loop, frame-rate independent. Velocity eases toward a capped 30 px/s, slowing over the last 100 px. Heads for the cursor while the mouse moves; otherwise roams to random on-screen spots, picking a new one on arrival. Roams the whole screen on every device. Slow bob of 6 px.
+- Appear: waits off the left edge. The first time scroll passes 95% of the hero's height, a 1.5 s opacity transition shows it and it floats in at 90 px/s toward 40% across the screen. The float-in happens once; later it fades in and out where it is. Does not depend on page length.
+- Motion: `requestAnimationFrame` loop, frame-rate independent. 90 px/s for the first 2.5 s after it appears, then velocity eases toward a capped 30 px/s, slowing over the last 100 px. Heads for the cursor while the mouse moves; otherwise roams to random on-screen spots, picking a new one on arrival. Roams the whole screen on every device. Slow bob of 6 px.
 - Rotation: the head turns toward the target (the cursor while it moves), at most 12 degrees a second, within 45 degrees of upright, plus a 5 degree sway. Holds its angle within 40 px of the target; when the target is nearly straight below, stays on its current side.
+- Layering: astronaut and hose come after the hero in the DOM, so the moon never paints over them, and stay under the page text.
 - Hose: SVG path from off-screen on the left edge, 35% down the screen, to the astronaut's hip (rotated with it). Catmull-Rom curve through 4 inner points that sway on uneven sine waves, with more slack when the astronaut is close. Light grey, 2.5 px.
 - Reduced motion: hidden.
 
