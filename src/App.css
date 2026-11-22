@@ -89,10 +89,10 @@ nav .name {
 }
 
 /* Page */
-/* At least one screen tall, so the page always scrolls far enough for the moon to fade out */
+/* Tall enough that the page always scrolls far enough for the moon to fade out and the astronaut to fade in */
 main {
   max-width: 46rem;
-  min-height: 100lvh;
+  min-height: 130lvh;
   margin: 0 auto;
   padding: 0 1.5rem;
   display: flex;
@@ -200,7 +200,7 @@ main > section:last-of-type {
     .astronaut {
       animation: fade-in linear both;
       animation-timeline: scroll(root);
-      animation-range: 100lvh 130lvh;
+      animation-range: 100lvh 125lvh;
     }
   }
 }
