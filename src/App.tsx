@@ -76,7 +76,7 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
     const a = el.current
     const hose = hoseEl.current
     if (!a || !hose || matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const SPEED = 20 // px per second, however fast the cursor moves
+    const SPEED = 30 // px per second, however fast the cursor moves
     const ENTRY_SPEED = 90 // px per second while floating in for the first time
     // Waits just off the left edge until the moon has faded, then floats in
     let stage: 'waiting' | 'entering' | 'roaming' = 'waiting'
