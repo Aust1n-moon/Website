@@ -70,7 +70,7 @@ function useShootingStars(sky: RefObject<HTMLDivElement | null>) {
   }, [sky])
 }
 
-// Drifts toward the mouse at a capped speed like zero gravity; with no mouse (touch), wanders to random points
+// Roams the screen at a capped speed like zero gravity, heading for the mouse while it moves
 function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<SVGPathElement | null>) {
   useEffect(() => {
     const a = el.current
@@ -94,11 +94,6 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       ty = e.clientY
       lastMouse = performance.now()
     }
-    const wander = window.setInterval(() => {
-      if (performance.now() - lastMouse < 5000) return
-      tx = Math.random() * innerWidth
-      ty = Math.random() * innerHeight
-    }, 12000)
     const tick = (t: number) => {
       // Measured in 60 Hz frames, so motion is the same at any refresh rate
       const frames = Math.min(t - last, 100) / 16.7
@@ -108,6 +103,11 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       const dx = tx - w / 2 - x
       const dy = ty - h / 2 - y
       const dist = Math.hypot(dx, dy) || 1
+      // Picks a new spot on arrival, unless the mouse moved in the last 3s
+      if (dist < 60 && performance.now() - lastMouse > 3000) {
+        tx = Math.random() * innerWidth
+        ty = Math.random() * innerHeight
+      }
       // Full speed when far, slowing over the last 100px so it settles instead of stopping dead
       const speed = (SPEED / 60) * Math.min(1, dist / 100)
       // Velocity eases toward the target velocity, so starts and turns are gradual
@@ -134,7 +134,6 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
     window.addEventListener('pointermove', onMove, { passive: true })
     return () => {
       cancelAnimationFrame(frame)
-      clearInterval(wander)
       window.removeEventListener('pointermove', onMove)
     }
   }, [el, hoseEl])
