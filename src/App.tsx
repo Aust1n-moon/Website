@@ -76,7 +76,7 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
     const a = el.current
     const hose = hoseEl.current
     if (!a || !hose || matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const SPEED = 35 // px per second, however fast the cursor moves
+    const SPEED = 20 // px per second, however fast the cursor moves
     const ENTRY_SPEED = 90 // px per second while floating in for the first time
     // Waits just off the left edge until the moon has faded, then floats in
     let stage: 'waiting' | 'entering' | 'roaming' = 'waiting'
@@ -168,7 +168,7 @@ function hosePath(cx: number, cy: number, w: number, h: number, turnDeg: number,
   const ex = cx + ox * Math.cos(r) - oy * Math.sin(r)
   const ey = cy + ox * Math.sin(r) + oy * Math.cos(r)
   const sx = -10
-  const sy = innerHeight * 0.65
+  const sy = innerHeight * 0.35
   const len = Math.hypot(ex - sx, ey - sy) || 1
   const nx = -(ey - sy) / len
   const ny = (ex - sx) / len
