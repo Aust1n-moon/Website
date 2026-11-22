@@ -168,7 +168,7 @@ function hosePath(cx: number, cy: number, w: number, h: number, turnDeg: number,
   const ex = cx + ox * Math.cos(r) - oy * Math.sin(r)
   const ey = cy + ox * Math.sin(r) + oy * Math.cos(r)
   const sx = -10
-  const sy = innerHeight * 0.75
+  const sy = innerHeight * 0.65
   const len = Math.hypot(ex - sx, ey - sy) || 1
   const nx = -(ey - sy) / len
   const ny = (ex - sx) / len
