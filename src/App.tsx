@@ -77,8 +77,11 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
     const hose = hoseEl.current
     if (!a || !hose || matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const SPEED = 35 // px per second, however fast the cursor moves
-    let x = innerWidth * 0.6
-    let y = innerHeight * 0.3
+    const ENTRY_SPEED = 90 // px per second while floating in for the first time
+    // Waits just off the left edge until the moon has faded, then floats in
+    let stage: 'waiting' | 'entering' | 'roaming' = 'waiting'
+    let x = -150
+    let y = innerHeight * 0.45
     let vx = 0
     let vy = 0
     let aim = 0
@@ -99,21 +102,33 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       last = t
       const w = a.offsetWidth
       const h = a.offsetHeight
+      // Appears once the moon has faded, without needing the page to be any longer
+      const shown = scrollY > innerHeight * 0.95
+      if (stage === 'waiting' && shown) {
+        stage = 'entering'
+        tx = innerWidth * 0.4
+        ty = innerHeight * 0.45
+      }
       const dx = tx - w / 2 - x
       const dy = ty - h / 2 - y
       const dist = Math.hypot(dx, dy) || 1
       // Picks a new spot on arrival, unless the mouse moved in the last 3s
-      if (dist < 60 && performance.now() - lastMouse > 3000) {
-        tx = Math.random() * innerWidth
-        ty = Math.random() * innerHeight
+      if (dist < 60 && stage !== 'waiting') {
+        if (stage === 'entering') stage = 'roaming'
+        if (performance.now() - lastMouse > 3000) {
+          tx = Math.random() * innerWidth
+          ty = Math.random() * innerHeight
+        }
       }
       // Full speed when far, slowing over the last 100px so it settles instead of stopping dead
-      const speed = (SPEED / 60) * Math.min(1, dist / 100)
+      const cap = stage === 'waiting' ? 0 : stage === 'entering' ? ENTRY_SPEED : SPEED
+      const speed = (cap / 60) * Math.min(1, dist / 100)
       // Velocity eases toward the target velocity, so starts and turns are gradual
       const ease = 1 - 0.98 ** frames
       vx += ((dx / dist) * speed - vx) * ease
       vy += ((dy / dist) * speed - vy) * ease
-      x = Math.min(Math.max(x + vx * frames, 0), innerWidth - w)
+      // The left bound starts below 0 so he can float in from off-screen
+      x = Math.min(Math.max(x + vx * frames, Math.min(x, 0)), innerWidth - w)
       y = Math.min(Math.max(y + vy * frames, 0), innerHeight - h)
       const bobY = y + Math.sin(t / 1600) * 6
       // Head turns toward where he's heading (the cursor while it moves), as far as 45 degrees allows
@@ -130,10 +145,8 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       const turn = Math.min(Math.max(aim + 5 * Math.sin(t / 3100), -45), 45)
       a.style.translate = `${x}px ${bobY}px`
       a.style.rotate = `${turn}deg`
-      // Appears once the moon has faded, without needing the page to be any longer
-      const shown = scrollY > innerHeight * 0.95 ? '1' : '0'
-      a.style.opacity = shown
-      hose.style.opacity = shown
+      a.style.opacity = shown ? '1' : '0'
+      hose.style.opacity = shown ? '1' : '0'
       hose.setAttribute('d', hosePath(x + w / 2, bobY + h / 2, w, h, turn, t))
       frame = requestAnimationFrame(tick)
     }
@@ -146,7 +159,7 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
   }, [el, hoseEl])
 }
 
-// Oxygen hose from off-screen on the upper left to the astronaut; inner points sway on their own slow waves so it never runs straight
+// Oxygen hose from off-screen on the lower left to the astronaut; inner points sway on their own slow waves so it never runs straight
 function hosePath(cx: number, cy: number, w: number, h: number, turnDeg: number, t: number) {
   // The hose meets his left hip at about (19%, 68%) of the image, rotated with the astronaut
   const r = (turnDeg * Math.PI) / 180
@@ -155,7 +168,7 @@ function hosePath(cx: number, cy: number, w: number, h: number, turnDeg: number,
   const ex = cx + ox * Math.cos(r) - oy * Math.sin(r)
   const ey = cy + ox * Math.sin(r) + oy * Math.cos(r)
   const sx = -10
-  const sy = innerHeight * 0.15
+  const sy = innerHeight * 0.75
   const len = Math.hypot(ex - sx, ey - sy) || 1
   const nx = -(ey - sy) / len
   const ny = (ex - sx) / len
