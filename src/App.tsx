@@ -81,7 +81,7 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
     let y = innerHeight * 0.3
     let vx = 0
     let vy = 0
-    let tilt = 0
+    let aim = 0
     let tx = x
     let ty = y
     let lastMouse = -Infinity
@@ -115,11 +115,18 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       vy += ((dy / dist) * speed - vy) * ease
       x = Math.min(Math.max(x + vx * frames, 0), innerWidth - w)
       y = Math.min(Math.max(y + vy * frames, 0), innerHeight - h)
-      tilt += (Math.min(Math.max(vx * 20, -20), 20) - tilt) * ease
       const bobY = y + Math.sin(t / 1600) * 6
-      // Sways between upright and 45 degrees either way; two uneven waves keep it from looking like a pendulum
-      const sway = 33 * Math.sin(t / 8000) + 9 * Math.sin(t / 3100 + 1.3)
-      const turn = Math.min(Math.max(sway + tilt * 0.4, -45), 45)
+      // Head turns toward where he's heading (the cursor while it moves), as far as 45 degrees allows
+      const ax = tx - x - w / 2
+      const ay = ty - bobY - h / 2
+      if (Math.hypot(ax, ay) > 40) {
+        // Angle clockwise from straight up
+        const dir = (Math.atan2(ax, -ay) * 180) / Math.PI
+        // Nearly straight below: stay on the current side instead of swinging across; otherwise less the helmet's 29 degree lean in the image
+        const want = Math.abs(dir) > 150 ? (aim >= 0 ? 45 : -45) : Math.min(Math.max(dir - 29, -45), 45)
+        aim += (want - aim) * (1 - 0.985 ** frames)
+      }
+      const turn = Math.min(Math.max(aim + 5 * Math.sin(t / 3100), -45), 45)
       a.style.translate = `${x}px ${bobY}px`
       a.style.rotate = `${turn}deg`
       // Appears once the moon has faded, without needing the page to be any longer
