@@ -71,10 +71,11 @@ function useShootingStars(sky: RefObject<HTMLDivElement | null>) {
 }
 
 // Drifts toward the mouse at a capped speed like zero gravity; with no mouse (touch), wanders to random points
-function useAstronaut(el: RefObject<HTMLImageElement | null>) {
+function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<SVGPathElement | null>) {
   useEffect(() => {
     const a = el.current
-    if (!a || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const hose = hoseEl.current
+    if (!a || !hose || matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const SPEED = 35 // px per second, however fast the cursor moves
     let x = innerWidth * 0.6
     let y = innerHeight * 0.3
@@ -118,10 +119,15 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>) {
       tilt += (Math.min(Math.max(vx * 20, -20), 20) - tilt) * ease
       // One slow turn a minute, like a tumble in zero gravity
       spin += frames * 0.1
-      a.style.translate = `${x}px ${y + Math.sin(t / 1600) * 6}px`
-      a.style.rotate = `${spin + tilt}deg`
+      const bobY = y + Math.sin(t / 1600) * 6
+      const turn = spin + tilt
+      a.style.translate = `${x}px ${bobY}px`
+      a.style.rotate = `${turn}deg`
       // Appears once the moon has faded, without needing the page to be any longer
-      a.style.opacity = scrollY > innerHeight * 0.95 ? '1' : '0'
+      const shown = scrollY > innerHeight * 0.95 ? '1' : '0'
+      a.style.opacity = shown
+      hose.style.opacity = shown
+      hose.setAttribute('d', hosePath(x + w / 2, bobY + h / 2, w, h, turn, t))
       frame = requestAnimationFrame(tick)
     }
     frame = requestAnimationFrame(tick)
@@ -131,7 +137,41 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>) {
       clearInterval(wander)
       window.removeEventListener('pointermove', onMove)
     }
-  }, [el])
+  }, [el, hoseEl])
+}
+
+// Oxygen hose from off-screen on the upper left to the backpack; inner points sway on their own slow waves so it never runs straight
+function hosePath(cx: number, cy: number, w: number, h: number, turnDeg: number, t: number) {
+  // Backpack sits at about (40%, 15%) of the image, rotated with the astronaut
+  const r = (turnDeg * Math.PI) / 180
+  const ox = -0.1 * w
+  const oy = -0.35 * h
+  const ex = cx + ox * Math.cos(r) - oy * Math.sin(r)
+  const ey = cy + ox * Math.sin(r) + oy * Math.cos(r)
+  const sx = -10
+  const sy = innerHeight * 0.15
+  const len = Math.hypot(ex - sx, ey - sy) || 1
+  const nx = -(ey - sy) / len
+  const ny = (ex - sx) / len
+  // More slack, so bigger curves, when the astronaut is close to the anchor
+  const amp = Math.max(50, 150 - len * 0.08)
+  const pts: [number, number][] = [[sx, sy]]
+  for (let i = 1; i <= 4; i++) {
+    const f = i / 5
+    const off = amp * Math.sin(t / (1700 + i * 430) + i * 1.9)
+    pts.push([sx + (ex - sx) * f + nx * off, sy + (ey - sy) * f + ny * off])
+  }
+  pts.push([ex, ey])
+  // Catmull-Rom through the points, as cubic Beziers
+  let d = `M${sx} ${sy}`
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(i - 1, 0)]
+    const p1 = pts[i]
+    const p2 = pts[i + 1]
+    const p3 = pts[Math.min(i + 2, pts.length - 1)]
+    d += `C${p1[0] + (p2[0] - p0[0]) / 6} ${p1[1] + (p2[1] - p0[1]) / 6} ${p2[0] - (p3[0] - p1[0]) / 6} ${p2[1] - (p3[1] - p1[1]) / 6} ${p2[0]} ${p2[1]}`
+  }
+  return d
 }
 
 function SocialLinks() {
@@ -186,11 +226,13 @@ function App() {
   const skyRef = useRef<HTMLDivElement>(null)
   useShootingStars(skyRef)
   const astronautRef = useRef<HTMLImageElement>(null)
-  useAstronaut(astronautRef)
+  const hoseRef = useRef<SVGPathElement>(null)
+  useAstronaut(astronautRef, hoseRef)
 
   return (
     <>
       <div className="sky" aria-hidden="true" ref={skyRef} />
+      <svg className="hose" aria-hidden="true"><path ref={hoseRef} /></svg>
       <img className="astronaut" ref={astronautRef} src="/astronaut.png" alt="" />
       <nav className={navHidden ? 'nav-hidden' : ''}>
         <a href="#top" className="name">Austin Moon</a>
