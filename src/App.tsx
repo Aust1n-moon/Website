@@ -70,6 +70,133 @@ function useShootingStars(sky: RefObject<HTMLDivElement | null>) {
   }, [sky])
 }
 
+// Roams the screen at a capped speed like zero gravity, heading for the mouse while it moves
+function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<SVGPathElement | null>) {
+  useEffect(() => {
+    const a = el.current
+    const hose = hoseEl.current
+    if (!a || !hose || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const SPEED = 30 // px per second, however fast the cursor moves
+    const ENTRY_SPEED = 90 // px per second for the first 2.5s after he appears
+    // Waits just off the left edge until the moon has faded, then floats in
+    let waiting = true
+    let enteredAt = 0
+    let x = -150
+    let y = innerHeight * 0.45
+    let vx = 0
+    let vy = 0
+    let aim = 0
+    let tx = x
+    let ty = y
+    let lastMouse = -Infinity
+    let last = performance.now()
+    let frame = 0
+    const hero = document.querySelector<HTMLElement>('.hero')
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse' || waiting) return
+      tx = e.clientX
+      ty = e.clientY
+      lastMouse = performance.now()
+    }
+    const tick = (t: number) => {
+      // Measured in 60 Hz frames, so motion is the same at any refresh rate
+      const frames = Math.max(0, Math.min(t - last, 100)) / 16.7
+      last = t
+      const w = a.offsetWidth
+      const h = a.offsetHeight
+      // Appears once the moon has faded, without needing the page to be any longer
+      // Measured against the hero, which is the large viewport height the moon fades over
+      const shown = scrollY > (hero?.offsetHeight ?? innerHeight) * 0.95
+      if (waiting && shown) {
+        waiting = false
+        enteredAt = t
+        tx = innerWidth * 0.4
+        ty = innerHeight * 0.45
+      }
+      // Keeps the target on screen, so a resize can't leave him pinned to an edge chasing it
+      tx = Math.min(Math.max(tx, w / 2), innerWidth - w / 2)
+      ty = Math.min(Math.max(ty, h / 2), innerHeight - h / 2)
+      const dx = tx - w / 2 - x
+      const dy = ty - h / 2 - y
+      const dist = Math.hypot(dx, dy) || 1
+      // Picks a new spot on arrival, unless the mouse moved in the last 3s
+      if (dist < 60 && !waiting && performance.now() - lastMouse > 3000) {
+        tx = Math.random() * innerWidth
+        ty = Math.random() * innerHeight
+      }
+      // Full speed when far, slowing over the last 100px so it settles instead of stopping dead
+      const cap = waiting ? 0 : t - enteredAt < 2500 ? ENTRY_SPEED : SPEED
+      const speed = (cap / 60) * Math.min(1, dist / 100)
+      // Velocity eases toward the target velocity, so starts and turns are gradual
+      const ease = 1 - 0.98 ** frames
+      vx += ((dx / dist) * speed - vx) * ease
+      vy += ((dy / dist) * speed - vy) * ease
+      // The left bound starts below 0 so he can float in from off-screen
+      x = Math.min(Math.max(x + vx * frames, Math.min(x, 0)), innerWidth - w)
+      y = Math.min(Math.max(y + vy * frames, 0), innerHeight - h)
+      const bobY = y + Math.sin(t / 1600) * 6
+      // Head turns toward where he's heading (the cursor while it moves), as far as 45 degrees allows
+      const ax = tx - x - w / 2
+      const ay = ty - bobY - h / 2
+      if (Math.hypot(ax, ay) > 40) {
+        // Angle clockwise from straight up
+        const dir = (Math.atan2(ax, -ay) * 180) / Math.PI
+        // Nearly straight below: stay on the current side instead of swinging across; otherwise less the helmet's 29 degree lean in the image
+        const want = Math.abs(dir) > 150 ? (aim >= 0 ? 45 : -45) : Math.min(Math.max(dir - 29, -45), 45)
+        // Slow turn: eases over a few seconds and never faster than 12 degrees a second
+        aim += Math.min(Math.max((want - aim) * (1 - 0.995 ** frames), -0.2 * frames), 0.2 * frames)
+      }
+      const turn = Math.min(Math.max(aim + 5 * Math.sin(t / 3100), -45), 45)
+      a.style.translate = `${x}px ${bobY}px`
+      a.style.rotate = `${turn}deg`
+      a.style.opacity = shown ? '1' : '0'
+      hose.style.opacity = shown ? '1' : '0'
+      hose.setAttribute('d', hosePath(x + w / 2, bobY + h / 2, w, h, turn, t))
+      frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    window.addEventListener('pointermove', onMove, { passive: true })
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('pointermove', onMove)
+    }
+  }, [el, hoseEl])
+}
+
+// Oxygen hose from off-screen on the left edge to the astronaut; inner points sway on their own slow waves so it never runs straight
+function hosePath(cx: number, cy: number, w: number, h: number, turnDeg: number, t: number) {
+  // The hose meets his left hip at about (19%, 68%) of the image, rotated with the astronaut
+  const r = (turnDeg * Math.PI) / 180
+  const ox = -0.31 * w
+  const oy = 0.18 * h
+  const ex = cx + ox * Math.cos(r) - oy * Math.sin(r)
+  const ey = cy + ox * Math.sin(r) + oy * Math.cos(r)
+  const sx = -10
+  const sy = innerHeight * 0.35
+  const len = Math.hypot(ex - sx, ey - sy) || 1
+  const nx = -(ey - sy) / len
+  const ny = (ex - sx) / len
+  // More slack, so bigger curves, when the astronaut is close to the anchor
+  const amp = Math.max(50, 150 - len * 0.08)
+  const pts: [number, number][] = [[sx, sy]]
+  for (let i = 1; i <= 4; i++) {
+    const f = i / 5
+    const off = amp * Math.sin(t / (1700 + i * 430) + i * 1.9)
+    pts.push([sx + (ex - sx) * f + nx * off, sy + (ey - sy) * f + ny * off])
+  }
+  pts.push([ex, ey])
+  // Catmull-Rom through the points, as cubic Beziers
+  let d = `M${sx} ${sy}`
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(i - 1, 0)]
+    const p1 = pts[i]
+    const p2 = pts[i + 1]
+    const p3 = pts[Math.min(i + 2, pts.length - 1)]
+    d += `C${p1[0] + (p2[0] - p0[0]) / 6} ${p1[1] + (p2[1] - p0[1]) / 6} ${p2[0] - (p3[0] - p1[0]) / 6} ${p2[1] - (p3[1] - p1[1]) / 6} ${p2[0]} ${p2[1]}`
+  }
+  return d
+}
+
 function SocialLinks() {
   return (
     <div className="nav-links">
@@ -121,6 +248,9 @@ function App() {
   const navHidden = useHideNavOnScroll()
   const skyRef = useRef<HTMLDivElement>(null)
   useShootingStars(skyRef)
+  const astronautRef = useRef<HTMLImageElement>(null)
+  const hoseRef = useRef<SVGPathElement>(null)
+  useAstronaut(astronautRef, hoseRef)
 
   return (
     <>
@@ -135,6 +265,10 @@ function App() {
         <h1>Austin Moon</h1>
         <p className="bio">Mechatronics + AI @ UWaterloo. Building across AI/ML and Robotics</p>
       </header>
+
+      {/* After the hero so the moon never paints over them; still under the page text */}
+      <svg className="hose" aria-hidden="true"><path ref={hoseRef} /></svg>
+      <img className="astronaut" ref={astronautRef} src="/astronaut.png" alt="" />
 
       <main>
 
