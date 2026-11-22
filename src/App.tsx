@@ -120,6 +120,8 @@ function useAstronaut(el: RefObject<HTMLVideoElement | null>) {
       spin += frames * 0.1
       a.style.translate = `${x}px ${y + Math.sin(t / 1600) * 6}px`
       a.style.rotate = `${spin + tilt}deg`
+      // Appears once the moon has faded, without needing the page to be any longer
+      a.style.opacity = scrollY > innerHeight * 0.95 ? '1' : '0'
       frame = requestAnimationFrame(tick)
     }
     frame = requestAnimationFrame(tick)
