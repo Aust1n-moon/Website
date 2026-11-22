@@ -70,7 +70,7 @@ function useShootingStars(sky: RefObject<HTMLDivElement | null>) {
   }, [sky])
 }
 
-// Roams the screen at a capped speed like zero gravity, heading for the mouse while it moves
+// Roams at a capped speed like zero gravity, heading for the mouse while it moves; on wide screens it keeps to the left gutter
 function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<SVGPathElement | null>) {
   useEffect(() => {
     const a = el.current
@@ -90,6 +90,7 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
     let lastMouse = -Infinity
     let last = performance.now()
     let frame = 0
+    const main = document.querySelector('main')
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse') return
       tx = e.clientX
@@ -109,14 +110,18 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
         tx = innerWidth * 0.4
         ty = innerHeight * 0.45
       }
-      const dx = tx - w / 2 - x
+      // On wide screens he stays in the left gutter beside the text; it ends 12px into main's 24px padding
+      const right = (main?.getBoundingClientRect().left ?? 0) + 12
+      const gutter = right >= 120
+      const maxX = gutter ? right - w : innerWidth - w
+      const dx = Math.min(tx - w / 2, maxX) - x
       const dy = ty - h / 2 - y
       const dist = Math.hypot(dx, dy) || 1
       // Picks a new spot on arrival, unless the mouse moved in the last 3s
       if (dist < 60 && stage !== 'waiting') {
         if (stage === 'entering') stage = 'roaming'
         if (performance.now() - lastMouse > 3000) {
-          tx = Math.random() * innerWidth
+          tx = Math.random() * (gutter ? right : innerWidth)
           ty = Math.random() * innerHeight
         }
       }
@@ -128,7 +133,7 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       vx += ((dx / dist) * speed - vx) * ease
       vy += ((dy / dist) * speed - vy) * ease
       // The left bound starts below 0 so he can float in from off-screen
-      x = Math.min(Math.max(x + vx * frames, Math.min(x, 0)), innerWidth - w)
+      x = Math.min(Math.max(x + vx * frames, Math.min(x, 0)), maxX)
       y = Math.min(Math.max(y + vy * frames, 0), innerHeight - h)
       const bobY = y + Math.sin(t / 1600) * 6
       // Head turns toward where he's heading (the cursor while it moves), as far as 45 degrees allows
