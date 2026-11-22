@@ -261,14 +261,14 @@ function App() {
       </nav>
 
       <header className="hero" id="top">
-        <img src="/hero.webp" alt="" />
+        <img src="/images/hero.webp" alt="" />
         <h1>Austin Moon</h1>
         <p className="bio">Mechatronics + AI @ UWaterloo. Building across AI/ML and Robotics</p>
       </header>
 
       {/* After the hero so the moon never paints over them; still under the page text */}
       <svg className="hose" aria-hidden="true"><path ref={hoseRef} /></svg>
-      <img className="astronaut" ref={astronautRef} src="/astronaut.png" alt="" />
+      <img className="astronaut" ref={astronautRef} src="/images/astronaut.png" alt="" />
 
       <main>
 
