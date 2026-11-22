@@ -117,9 +117,9 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       y = Math.min(Math.max(y + vy * frames, 0), innerHeight - h)
       tilt += (Math.min(Math.max(vx * 20, -20), 20) - tilt) * ease
       const bobY = y + Math.sin(t / 1600) * 6
-      // Sways between upright and 60 degrees either way; two uneven waves keep it from looking like a pendulum
-      const sway = 45 * Math.sin(t / 8000) + 12 * Math.sin(t / 3100 + 1.3)
-      const turn = Math.min(Math.max(sway + tilt * 0.5, -60), 60)
+      // Sways between upright and 30 degrees either way; two uneven waves keep it from looking like a pendulum
+      const sway = 22 * Math.sin(t / 8000) + 6 * Math.sin(t / 3100 + 1.3)
+      const turn = Math.min(Math.max(sway + tilt * 0.25, -30), 30)
       a.style.translate = `${x}px ${bobY}px`
       a.style.rotate = `${turn}deg`
       // Appears once the moon has faded, without needing the page to be any longer
