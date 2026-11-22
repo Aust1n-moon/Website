@@ -195,12 +195,42 @@ main > section:last-of-type {
       animation-timeline: scroll(root), --hero;
       animation-range: 0 100svh, exit;
     }
+
+    /* Fades in once the moon is gone */
+    .astronaut {
+      animation: fade-in linear both;
+      animation-timeline: scroll(root);
+      animation-range: 100lvh 130lvh;
+    }
+  }
+}
+
+/* Black clip background drops out under screen blending; the mask hides the clip's edge and its own stars */
+.astronaut {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 180px;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(closest-side, #000 75%, transparent);
+}
+
+@media (max-width: 640px) {
+  .astronaut {
+    width: 120px;
   }
 }
 
 @keyframes fade-out {
   40% { opacity: 1; }
   to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  to { opacity: 1; }
 }
 
 /* translate, not transform, so the centering translateX stays */

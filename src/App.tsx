@@ -70,6 +70,50 @@ function useShootingStars(sky: RefObject<HTMLDivElement | null>) {
   }, [sky])
 }
 
+// Eases toward the mouse like zero gravity; with no mouse (touch), wanders to random points
+function useAstronaut(el: RefObject<HTMLVideoElement | null>) {
+  useEffect(() => {
+    const a = el.current
+    if (!a || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let x = innerWidth * 0.6
+    let y = innerHeight * 0.3
+    let rot = 0
+    let tx = x
+    let ty = y
+    let lastMouse = -Infinity
+    let frame = 0
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return
+      tx = e.clientX
+      ty = e.clientY
+      lastMouse = performance.now()
+    }
+    const wander = window.setInterval(() => {
+      if (performance.now() - lastMouse < 5000) return
+      tx = Math.random() * innerWidth
+      ty = Math.random() * innerHeight
+    }, 8000)
+    const tick = (t: number) => {
+      const w = a.offsetWidth
+      const h = a.offsetHeight
+      const nx = Math.min(Math.max(x + (tx - w / 2 - x) * 0.006, 0), innerWidth - w)
+      y = Math.min(Math.max(y + (ty - h / 2 - y) * 0.006, 0), innerHeight - h)
+      rot += (Math.min(Math.max((nx - x) * 4, -15), 15) - rot) * 0.05
+      x = nx
+      a.style.translate = `${x}px ${y + Math.sin(t / 955) * 8}px`
+      a.style.rotate = `${rot}deg`
+      frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    window.addEventListener('pointermove', onMove, { passive: true })
+    return () => {
+      cancelAnimationFrame(frame)
+      clearInterval(wander)
+      window.removeEventListener('pointermove', onMove)
+    }
+  }, [el])
+}
+
 function SocialLinks() {
   return (
     <div className="nav-links">
@@ -121,10 +165,16 @@ function App() {
   const navHidden = useHideNavOnScroll()
   const skyRef = useRef<HTMLDivElement>(null)
   useShootingStars(skyRef)
+  const astronautRef = useRef<HTMLVideoElement>(null)
+  useAstronaut(astronautRef)
 
   return (
     <>
       <div className="sky" aria-hidden="true" ref={skyRef} />
+      <video className="astronaut" ref={astronautRef} autoPlay muted loop playsInline aria-hidden="true">
+        <source src="/astronaut.webm" type="video/webm" />
+        <source src="/astronaut.mp4" type="video/mp4" />
+      </video>
       <nav className={navHidden ? 'nav-hidden' : ''}>
         <a href="#top" className="name">Austin Moon</a>
         <SocialLinks />
