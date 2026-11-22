@@ -77,9 +77,10 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
     const hose = hoseEl.current
     if (!a || !hose || matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const SPEED = 30 // px per second, however fast the cursor moves
-    const ENTRY_SPEED = 90 // px per second while floating in for the first time
+    const ENTRY_SPEED = 90 // px per second for the first 2.5s after he appears
     // Waits just off the left edge until the moon has faded, then floats in
-    let stage: 'waiting' | 'entering' | 'roaming' = 'waiting'
+    let waiting = true
+    let enteredAt = 0
     let x = -150
     let y = innerHeight * 0.45
     let vx = 0
@@ -95,8 +96,6 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       tx = e.clientX
       ty = e.clientY
       lastMouse = performance.now()
-      // The fast float-in ends once he's following the cursor
-      if (stage === 'entering') stage = 'roaming'
     }
     const tick = (t: number) => {
       // Measured in 60 Hz frames, so motion is the same at any refresh rate
@@ -106,8 +105,9 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       const h = a.offsetHeight
       // Appears once the moon has faded, without needing the page to be any longer
       const shown = scrollY > innerHeight * 0.95
-      if (stage === 'waiting' && shown) {
-        stage = 'entering'
+      if (waiting && shown) {
+        waiting = false
+        enteredAt = t
         tx = innerWidth * 0.4
         ty = innerHeight * 0.45
       }
@@ -118,15 +118,12 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       const dy = ty - h / 2 - y
       const dist = Math.hypot(dx, dy) || 1
       // Picks a new spot on arrival, unless the mouse moved in the last 3s
-      if (dist < 60 && stage !== 'waiting') {
-        if (stage === 'entering') stage = 'roaming'
-        if (performance.now() - lastMouse > 3000) {
-          tx = Math.random() * innerWidth
-          ty = Math.random() * innerHeight
-        }
+      if (dist < 60 && !waiting && performance.now() - lastMouse > 3000) {
+        tx = Math.random() * innerWidth
+        ty = Math.random() * innerHeight
       }
       // Full speed when far, slowing over the last 100px so it settles instead of stopping dead
-      const cap = stage === 'waiting' ? 0 : stage === 'entering' ? ENTRY_SPEED : SPEED
+      const cap = waiting ? 0 : t - enteredAt < 2500 ? ENTRY_SPEED : SPEED
       const speed = (cap / 60) * Math.min(1, dist / 100)
       // Velocity eases toward the target velocity, so starts and turns are gradual
       const ease = 1 - 0.98 ** frames
