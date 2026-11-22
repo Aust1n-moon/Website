@@ -1,7 +1,7 @@
 # Floating astronaut
 
 ## Intent
-After the moon fades out (at the Co-op section), a realistic astronaut floats in the sky and drifts slowly toward the cursor, like zero gravity, with visible arm and leg motion.
+After the moon fades out, an astronaut on an oxygen hose floats in the sky and drifts slowly toward the cursor, like zero gravity. The original request asked for a realistic astronaut with limb motion; see Revision.
 
 ## Approaches
 1. Photo cut into parts, rotated at the joints. Real look, but stiff joints, and needs a cutout image.
@@ -10,13 +10,15 @@ After the moon fades out (at the Co-op section), a realistic astronaut floats in
 
 Fallback: if no clip with a suitable license exists, return to the user before starting option 1.
 
-Revision: the first clip (front view, waving) was rejected as unrealistic. A Lottie animation was considered and dropped: none was realistic. The user wants a side view and natural floating, muted colors. The user then supplied a cartoon astronaut image to use instead.
+Revision: the video clips (front view, then a waving 3D model) were rejected as unrealistic or not side view. A Lottie animation was considered and dropped. The user then tried several still images and settled on a small cartoon spacewalker, with a separate animated hose.
 
 ## Design
-- Image: the user's black-and-white cartoon astronaut, cut out to a transparent PNG (`public/astronaut.png`, 90 x 88 px). Still image: it floats, drifts and tumbles as one piece, with no limb motion.
-- Appear: 1.5 s opacity transition, toggled by the animation loop once scroll passes 95% of a screen. Does not depend on page length.
-- Motion: `requestAnimationFrame` loop, eases 0.15% per 60 Hz frame toward the cursor (scaled by elapsed time), slow bob, slight tilt toward drift direction, and a slow tumble of one turn a minute. With no cursor (touch), drift slowly around the screen.
-- Size: 130 px wide on desktop, 90 px on mobile.
+- Image: the user's cartoon spacewalker, cut out to a transparent PNG (`public/astronaut.png`, 163 x 154 px) without the tether drawn in the source. Visor and inner lines are solid black. Still image: no limb motion.
+- Size: 60 px wide on desktop, 44 px below 640 px; `aspect-ratio` matches the PNG. `filter: brightness(0.8)` tones down the white.
+- Appear: waits off the left edge. Once scroll passes 95% of a screen, a 1.5 s opacity transition shows it and it floats in at 90 px/s toward 40% across the screen. Does not depend on page length.
+- Motion: `requestAnimationFrame` loop, frame-rate independent. Velocity eases toward a capped 30 px/s, slowing over the last 100 px. Heads for the cursor while the mouse moves; otherwise roams to random on-screen spots, picking a new one on arrival. Roams the whole screen on every device. Slow bob of 6 px.
+- Rotation: the head turns toward the target (the cursor while it moves), at most 12 degrees a second, within 45 degrees of upright, plus a 5 degree sway. Holds its angle within 40 px of the target; when the target is nearly straight below, stays on its current side.
+- Hose: SVG path from off-screen on the left edge, 35% down the screen, to the astronaut's hip (rotated with it). Catmull-Rom curve through 4 inner points that sway on uneven sine waves, with more slack when the astronaut is close. Light grey, 2.5 px.
 - Reduced motion: hidden.
 
 ## Non-goals

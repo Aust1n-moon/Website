@@ -95,10 +95,12 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
       tx = e.clientX
       ty = e.clientY
       lastMouse = performance.now()
+      // The fast float-in ends once he's following the cursor
+      if (stage === 'entering') stage = 'roaming'
     }
     const tick = (t: number) => {
       // Measured in 60 Hz frames, so motion is the same at any refresh rate
-      const frames = Math.min(t - last, 100) / 16.7
+      const frames = Math.max(0, Math.min(t - last, 100)) / 16.7
       last = t
       const w = a.offsetWidth
       const h = a.offsetHeight
@@ -109,6 +111,9 @@ function useAstronaut(el: RefObject<HTMLImageElement | null>, hoseEl: RefObject<
         tx = innerWidth * 0.4
         ty = innerHeight * 0.45
       }
+      // Keeps the target on screen, so a resize can't leave him pinned to an edge chasing it
+      tx = Math.min(Math.max(tx, w / 2), innerWidth - w / 2)
+      ty = Math.min(Math.max(ty, h / 2), innerHeight - h / 2)
       const dx = tx - w / 2 - x
       const dy = ty - h / 2 - y
       const dist = Math.hypot(dx, dy) || 1

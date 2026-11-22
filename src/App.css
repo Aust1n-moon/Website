@@ -204,6 +204,8 @@ main > section:last-of-type {
   left: 0;
   z-index: -1;
   width: 60px;
+  /* Matches astronaut.png, so the height is right before the image loads */
+  aspect-ratio: 163 / 154;
   opacity: 0;
   transition: opacity 1.5s;
   /* Tones down the white suit so it doesn't pop against the dark sky */
