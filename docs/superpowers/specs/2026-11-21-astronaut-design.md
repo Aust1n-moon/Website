@@ -10,12 +10,14 @@ After the moon fades out (at the Co-op section), a realistic astronaut floats in
 
 Fallback: if no clip with a suitable license exists, return to the user before starting option 1.
 
+Revision: the first clip (front view, waving) was rejected as unrealistic. A Lottie animation was considered and dropped: none was realistic. The user wants a side view and natural floating, muted colors.
+
 ## Design
-- Clip: free stock video (Pixabay, Pexels or Mixkit) with a license that allows website use without credit. Black background, 5 to 10 s loop, arm and leg motion. Trim and compress with ffmpeg to `public/astronaut.webm` and `public/astronaut.mp4`, about 1 to 2 MB.
-- Blend: fixed `<video autoplay muted loop playsinline>` with `mix-blend-mode: screen`. Behind page text, like `.sky`. `pointer-events: none`.
+- Clip: realistic 3D astronaut idling in zero gravity, three-quarter side view, no waving (Pixabay 222138, green screen, Pixabay Content License). Keyed onto pure black, seamless 8.2 s loop, smoothed from 10 to 30 fps, encoded to `public/astronaut.webm` and `public/astronaut.mp4`.
+- Blend: fixed `<video autoplay muted loop playsinline>` with `mix-blend-mode: screen`, so the black drops out. Behind page text, like `.sky`. `pointer-events: none`.
 - Appear: opacity on the `scroll(root)` timeline, fades in just after `100lvh`.
-- Motion: `requestAnimationFrame` loop, eases about 1% per frame toward the cursor, slow bob, slight tilt toward drift direction. With no cursor (touch), drift slowly around the screen.
-- Size: about 180 px wide on desktop, 120 px on mobile.
+- Motion: `requestAnimationFrame` loop, eases 0.15% per 60 Hz frame toward the cursor (scaled by elapsed time), slow bob, slight tilt toward drift direction, and a slow tumble of one turn a minute. With no cursor (touch), drift slowly around the screen.
+- Size: 130 px wide on desktop, 90 px on mobile.
 - Reduced motion: hidden.
 
 ## Non-goals

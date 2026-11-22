@@ -77,10 +77,12 @@ function useAstronaut(el: RefObject<HTMLVideoElement | null>) {
     if (!a || matchMedia('(prefers-reduced-motion: reduce)').matches) return
     let x = innerWidth * 0.6
     let y = innerHeight * 0.3
-    let rot = 0
+    let tilt = 0
+    let spin = 0
     let tx = x
     let ty = y
     let lastMouse = -Infinity
+    let last = performance.now()
     let frame = 0
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse') return
@@ -92,16 +94,22 @@ function useAstronaut(el: RefObject<HTMLVideoElement | null>) {
       if (performance.now() - lastMouse < 5000) return
       tx = Math.random() * innerWidth
       ty = Math.random() * innerHeight
-    }, 8000)
+    }, 12000)
     const tick = (t: number) => {
+      // Per-frame easing scaled by elapsed time, so speed is the same at any refresh rate
+      const frames = Math.min(t - last, 100) / 16.7
+      last = t
+      const k = 1 - (1 - 0.0015) ** frames
       const w = a.offsetWidth
       const h = a.offsetHeight
-      const nx = Math.min(Math.max(x + (tx - w / 2 - x) * 0.006, 0), innerWidth - w)
-      y = Math.min(Math.max(y + (ty - h / 2 - y) * 0.006, 0), innerHeight - h)
-      rot += (Math.min(Math.max((nx - x) * 4, -15), 15) - rot) * 0.05
+      const nx = Math.min(Math.max(x + (tx - w / 2 - x) * k, 0), innerWidth - w)
+      y = Math.min(Math.max(y + (ty - h / 2 - y) * k, 0), innerHeight - h)
+      tilt += (Math.min(Math.max((nx - x) / frames * 20, -20), 20) - tilt) * (1 - 0.98 ** frames)
+      // One slow turn a minute, like a tumble in zero gravity
+      spin += frames * 0.1
       x = nx
-      a.style.translate = `${x}px ${y + Math.sin(t / 955) * 8}px`
-      a.style.rotate = `${rot}deg`
+      a.style.translate = `${x}px ${y + Math.sin(t / 1600) * 6}px`
+      a.style.rotate = `${spin + tilt}deg`
       frame = requestAnimationFrame(tick)
     }
     frame = requestAnimationFrame(tick)

@@ -205,22 +205,21 @@ main > section:last-of-type {
   }
 }
 
-/* Black clip background drops out under screen blending; the mask hides the clip's edge and its own stars */
+/* The clip is keyed onto pure black, which drops out under screen blending */
 .astronaut {
   position: fixed;
   top: 0;
   left: 0;
   z-index: -1;
-  width: 180px;
+  width: 130px;
   opacity: 0;
   pointer-events: none;
   mix-blend-mode: screen;
-  mask-image: radial-gradient(closest-side, #000 75%, transparent);
 }
 
 @media (max-width: 640px) {
   .astronaut {
-    width: 120px;
+    width: 90px;
   }
 }
 
