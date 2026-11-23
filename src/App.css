@@ -320,7 +320,7 @@ h2 {
   margin: -0.5rem -0.75rem;
   border: 1px solid transparent;
   border-radius: 10px;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s, background-color 0.2s, backdrop-filter 0.2s;
 }
 
 .project-row:hover,
@@ -333,6 +333,9 @@ h2 {
 .project-row:hover,
 .project-row:focus-within {
   border-color: var(--hi);
+  /* Dark blurred backing keeps the text readable when the astronaut drifts behind the box */
+  background-color: rgb(0 0 0 / 0.45);
+  backdrop-filter: blur(8px);
   box-shadow:
     0 0 0 3px color-mix(in srgb, var(--hi) 30%, transparent),
     0 0 18px 4px color-mix(in srgb, var(--hi) 25%, transparent);
