@@ -28,12 +28,13 @@
   src: url('/fonts/chakra-petch-600.woff2') format('woff2');
 }
 
-/* Bio, section headings, company and project names, and positions; the hero name and body text stay on the system font */
+/* Bio, section headings, and the role and project text; the hero name and dates stay on the system font */
 .hero .bio,
 h2,
 .role-row .grow > p,
 .role-row .role .muted,
-.project-row .grow > a {
+.project-row .grow > a,
+.desc {
   font-family: 'Chakra Petch', sans-serif;
 }
 
