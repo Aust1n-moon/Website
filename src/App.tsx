@@ -11,7 +11,7 @@ const internships = [
 const designTeams = [
   // { company: 'Club 1', logo: '', position: 'President', dates: 'Jan 2019 – May 2019', description: 'Organized workshops and events for design-focused student community.' },
   { company: 'WAT.ai', logo: '/logos/wat_ai_logo.jpg', position: 'Machine Learning Engineer', dates: 'Sep 2026 - Present', description: 'Quantifying off ball attacking movement of soccer players', color: '#f0c018' },
-  { company: 'UW Association of Korean-Canadian Scientist and Engineers', logo: '/logos/uw_akcse_logo.png', position: 'Tech Exececutive', dates: 'Sep 2026 - Present', description: 'Developing AI and fullstack tools for AKCSE community', color: '#78c6db' },
+  { company: 'UW Association of Korean-Canadian Scientists and Engineers', logo: '/logos/uw_akcse_logo.png', position: 'Tech Executive', dates: 'Sep 2026 - Present', description: 'Developing AI and fullstack tools for AKCSE community', color: '#78c6db' },
   { company: 'Waterloo Aerial Robotics Group', logo: '/logos/waterloo_aerial_robotics_group_logo.jpg', position: 'Embedded Software Developer', dates: 'May 2025 - Aug 2026', description: 'Enhancing and integrating ZeroPilot Firmware for drones' },
   { company: 'UW Orbital', logo: '/logos/uw_orbital_logo.jpg', position: 'Mechanical Engineer', dates: 'Feb 2025 - Nov 2025', description: 'Designing parts for 3U CubeSat', color: '#e8384a' },
 ]
