@@ -309,12 +309,7 @@ h2 {
   margin: -0.5rem -0.75rem;
   border: 1px solid transparent;
   border-radius: 10px;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s, background-color 0.2s, backdrop-filter 0.2s;
-}
-
-.project-row:hover,
-.project-row:focus-within {
-  transform: translateY(-2px) scale(1.02);
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s, backdrop-filter 0.2s;
 }
 
 .role-row:hover,
@@ -351,11 +346,6 @@ h2 {
 
 .role-row:focus-visible {
   border-color: var(--text);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .project-row:hover,
-  .project-row:focus-within { transform: none; }
 }
 
 .logo {
