@@ -195,6 +195,13 @@ main > section:last-of-type {
       animation-timeline: scroll(root), --hero;
       animation-range: 0 100svh, exit;
     }
+
+    /* The nav name takes over as the hero name fades, so the two never show together */
+    nav .name {
+      animation: fade-in linear both;
+      animation-timeline: scroll(root);
+      animation-range: 50lvh 90lvh;
+    }
   }
 }
 
@@ -235,6 +242,11 @@ main > section:last-of-type {
   .astronaut {
     width: 44px;
   }
+}
+
+/* visibility too, so the hidden name can't take keyboard focus */
+@keyframes fade-in {
+  from { opacity: 0; visibility: hidden; }
 }
 
 @keyframes fade-out {
