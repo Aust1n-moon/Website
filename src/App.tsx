@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type RefObject } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import './App.css'
 
@@ -11,7 +11,7 @@ const internships = [
 const designTeams = [
   // { company: 'Club 1', logo: '', position: 'President', dates: 'Jan 2019 – May 2019', description: 'Organized workshops and events for design-focused student community.' },
   { company: 'WAT.ai', logo: '/logos/wat_ai_logo.jpg', position: 'Machine Learning Engineer', dates: 'Sep 2026 - Present', description: 'Quantifying off ball attacking movement of soccer players', color: '#f0c018' },
-  { company: 'UW Association of Korean-Canadian Scientist and Engineers', logo: '/logos/uw_akcse_logo.png', position: 'Tech Exececutive', dates: 'Sep 2026 - Present', description: 'Developing AI and fullstack tools for AKCSE community', color: '#78c6db' },
+  { company: 'UW Association of Korean-Canadian Scientists and Engineers', logo: '/logos/uw_akcse_logo.png', position: 'Tech Executive', dates: 'Sep 2026 - Present', description: 'Developing AI and fullstack tools for AKCSE community', color: '#78c6db' },
   { company: 'Waterloo Aerial Robotics Group', logo: '/logos/waterloo_aerial_robotics_group_logo.jpg', position: 'Embedded Software Developer', dates: 'May 2025 - Aug 2026', description: 'Enhancing and integrating ZeroPilot Firmware for drones' },
   { company: 'UW Orbital', logo: '/logos/uw_orbital_logo.jpg', position: 'Mechanical Engineer', dates: 'Feb 2025 - Nov 2025', description: 'Designing parts for 3U CubeSat', color: '#e8384a' },
 ]
@@ -24,12 +24,12 @@ const tagColors: Record<string, string> = {
 }
 
 const projects = [
-  { title: 'NFL Defensive Coverage Predictor', tag: 'AI/ML', description: 'End-to-end pipeline of predicting defensive coverages from video clips', link: 'https://github.com/Aust1n-moon/coverage-predictor' },
-  { title: 'Ghelper Clone', tag: 'Linux', description: 'Tray app for system hardware control panel for Linux on ASUS', link: 'https://github.com/Aust1n-moon/Ghelper-clone' },
-  { title: 'Flipper Bot', tag: 'Robotics', description: 'Autonomous switch-flipping robot with PID control, odometry-based boundary tracking, and evasive maneuvers', link: 'https://github.com/Aust1n-moon/Flipper-Bot' },
-  { title: 'NBA Predictor', tag: 'AI/ML', description: 'Predicting NBA game outcomes, spread, team totals, O/U', link: 'https://github.com/Aust1n-moon/NBA-Predictor' },
-  { title: 'Firefighter Bot', tag: 'Robotics', description: 'Autonomous robot for map navigation and fire detection/termination', link: 'https://github.com/Aust1n-moon/Firefighter-Bot-Firmware' },
-  { title: 'Sumo Bot', tag: 'Robotics', description: 'Battlebot with 3 custom PCBs, IR edge detection and a front ultrasonic sensor', link: 'https://github.com/Aust1n-moon/Sumo-Bot' },
+  { title: 'NFL Defensive Coverage Predictor', tag: 'AI/ML', description: 'Classifies defensive coverages from game film using YOLO, ByteTrack and an MLP', link: 'https://github.com/Aust1n-moon/coverage-predictor' },
+  { title: 'Ghelper Clone', tag: 'Linux', description: 'PyQt6 tray app for ASUS GPU modes, fan curves and power profiles on Fedora', link: 'https://github.com/Aust1n-moon/Ghelper-clone' },
+  { title: 'Flipper Bot', tag: 'Robotics', description: 'LEGO EV3 robot that turns its own switch off, then flees using PID and odometry', link: 'https://github.com/Aust1n-moon/Flipper-Bot' },
+  { title: 'NBA Predictor', tag: 'AI/ML', description: 'scikit-learn models for moneyline, spread and over/under, with injury filtering', link: 'https://github.com/Aust1n-moon/NBA-Predictor' },
+  { title: 'Firefighter Bot', tag: 'Robotics', description: 'PIC16F18875 firmware in C for a maze-following robot that puts out fires', link: 'https://github.com/Aust1n-moon/Firefighter-Bot-Firmware' },
+  { title: 'Sumo Bot', tag: 'Robotics', description: 'Battlebot with 3 hand-made custom PCBs that reached the semi-finals of 10+ bots', link: 'https://github.com/Aust1n-moon/Sumo-Bot' },
 ]
 
 function useHideNavOnScroll() {
@@ -222,11 +222,17 @@ function SocialLinks() {
   )
 }
 
+// A mouse click focuses the row, which keeps it open; drop that focus when the mouse leaves
+function closeOnLeave(e: ReactPointerEvent<HTMLLIElement>) {
+  const focused = document.activeElement
+  if (e.pointerType === 'mouse' && focused instanceof HTMLElement && e.currentTarget.contains(focused)) focused.blur()
+}
+
 function Roles({ items }: { items: typeof internships }) {
   return (
     <ul className="list">
       {items.map(exp => (
-        <li key={exp.company + exp.position} className="row role-row" tabIndex={0} style={{ '--row-accent': exp.color } as CSSProperties}>
+        <li key={exp.company + exp.position} className="row role-row" tabIndex={0} onPointerLeave={closeOnLeave} style={{ '--row-accent': exp.color } as CSSProperties}>
           <img className="logo" src={exp.logo} alt="" />
           <div className="grow">
             <p>{exp.company}</p>
@@ -286,7 +292,7 @@ function App() {
           <h2>Projects</h2>
           <ul className="list">
             {projects.map(p => (
-              <li key={p.title} className="row project-row" tabIndex={0} style={{ '--row-accent': tagColors[p.tag] } as CSSProperties}>
+              <li key={p.title} className="row project-row" tabIndex={0} onPointerLeave={closeOnLeave} style={{ '--row-accent': tagColors[p.tag] } as CSSProperties}>
                 <div className="grow">
                   <a href={p.link} target="_blank" rel="noopener noreferrer">
                     <span className="link">{p.title}</span> <span className="arrow" aria-hidden="true">↗</span>
