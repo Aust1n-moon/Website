@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type RefObject } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import './App.css'
 
@@ -222,11 +222,17 @@ function SocialLinks() {
   )
 }
 
+// A mouse click focuses the row, which keeps it open; drop that focus when the mouse leaves
+function closeOnLeave(e: ReactPointerEvent<HTMLLIElement>) {
+  const focused = document.activeElement
+  if (e.pointerType === 'mouse' && focused instanceof HTMLElement && e.currentTarget.contains(focused)) focused.blur()
+}
+
 function Roles({ items }: { items: typeof internships }) {
   return (
     <ul className="list">
       {items.map(exp => (
-        <li key={exp.company + exp.position} className="row role-row" tabIndex={0} style={{ '--row-accent': exp.color } as CSSProperties}>
+        <li key={exp.company + exp.position} className="row role-row" tabIndex={0} onPointerLeave={closeOnLeave} style={{ '--row-accent': exp.color } as CSSProperties}>
           <img className="logo" src={exp.logo} alt="" />
           <div className="grow">
             <p>{exp.company}</p>
@@ -286,7 +292,7 @@ function App() {
           <h2>Projects</h2>
           <ul className="list">
             {projects.map(p => (
-              <li key={p.title} className="row project-row" tabIndex={0} style={{ '--row-accent': tagColors[p.tag] } as CSSProperties}>
+              <li key={p.title} className="row project-row" tabIndex={0} onPointerLeave={closeOnLeave} style={{ '--row-accent': tagColors[p.tag] } as CSSProperties}>
                 <div className="grow">
                   <a href={p.link} target="_blank" rel="noopener noreferrer">
                     <span className="link">{p.title}</span> <span className="arrow" aria-hidden="true">↗</span>
