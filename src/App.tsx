@@ -24,12 +24,12 @@ const tagColors: Record<string, string> = {
 }
 
 const projects = [
-  { title: 'NFL Defensive Coverage Predictor', tag: 'AI/ML', description: 'End-to-end pipeline of predicting defensive coverages from video clips', link: 'https://github.com/Aust1n-moon/coverage-predictor' },
-  { title: 'Ghelper Clone', tag: 'Linux', description: 'Tray app for system hardware control panel for Linux on ASUS', link: 'https://github.com/Aust1n-moon/Ghelper-clone' },
-  { title: 'Flipper Bot', tag: 'Robotics', description: 'Autonomous switch-flipping robot with PID control, odometry-based boundary tracking, and evasive maneuvers', link: 'https://github.com/Aust1n-moon/Flipper-Bot' },
-  { title: 'NBA Predictor', tag: 'AI/ML', description: 'Predicting NBA game outcomes, spread, team totals, O/U', link: 'https://github.com/Aust1n-moon/NBA-Predictor' },
-  { title: 'Firefighter Bot', tag: 'Robotics', description: 'Autonomous robot for map navigation and fire detection/termination', link: 'https://github.com/Aust1n-moon/Firefighter-Bot-Firmware' },
-  { title: 'Sumo Bot', tag: 'Robotics', description: 'Battlebot with 3 custom PCBs, IR edge detection and a front ultrasonic sensor', link: 'https://github.com/Aust1n-moon/Sumo-Bot' },
+  { title: 'NFL Defensive Coverage Predictor', tag: 'AI/ML', description: 'Classifies defensive coverages from game film using YOLO, ByteTrack and an MLP', link: 'https://github.com/Aust1n-moon/coverage-predictor' },
+  { title: 'Ghelper Clone', tag: 'Linux', description: 'PyQt6 tray app for ASUS GPU modes, fan curves and power profiles on Fedora', link: 'https://github.com/Aust1n-moon/Ghelper-clone' },
+  { title: 'Flipper Bot', tag: 'Robotics', description: 'LEGO EV3 robot that turns its own switch off, then flees using PID and odometry', link: 'https://github.com/Aust1n-moon/Flipper-Bot' },
+  { title: 'NBA Predictor', tag: 'AI/ML', description: 'scikit-learn models for moneyline, spread and over/under, with injury filtering', link: 'https://github.com/Aust1n-moon/NBA-Predictor' },
+  { title: 'Firefighter Bot', tag: 'Robotics', description: 'PIC16F18875 firmware in C for a maze-following robot that puts out fires', link: 'https://github.com/Aust1n-moon/Firefighter-Bot-Firmware' },
+  { title: 'Sumo Bot', tag: 'Robotics', description: 'Battlebot with 3 hand-made custom PCBs that reached the semi-finals of 10+ bots', link: 'https://github.com/Aust1n-moon/Sumo-Bot' },
 ]
 
 function useHideNavOnScroll() {
