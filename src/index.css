@@ -14,6 +14,20 @@
   color-scheme: dark;
 }
 
+@font-face {
+  font-family: 'Chakra Petch';
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/chakra-petch-600.woff2') format('woff2');
+}
+
+/* Headings only; body text stays on the system font */
+h1,
+h2,
+nav .name {
+  font-family: 'Chakra Petch', sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }
