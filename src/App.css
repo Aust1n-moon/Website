@@ -295,17 +295,6 @@ h2 {
   text-align: right;
 }
 
-.role {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.2s ease;
-}
-
-.role > div {
-  overflow: hidden;
-}
-
-/* Keep logo, name and dates on one line while the role box opens below */
 /* Negative margins keep the text aligned with the headings; the padding is room for the hover box */
 .role-row,
 .project-row {
@@ -355,13 +344,6 @@ h2 {
   color: var(--muted);
 }
 
-.role-row:hover .role,
-.role-row:focus .role,
-.project-row:hover .role,
-.project-row:focus-within .role {
-  grid-template-rows: 1fr;
-}
-
 .role-row:focus,
 .project-row:focus {
   outline: none;
@@ -372,7 +354,6 @@ h2 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .role { transition: none; }
   .project-row:hover,
   .project-row:focus-within { transform: none; }
 }
