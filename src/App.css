@@ -282,16 +282,30 @@ h2 {
   gap: 1.4rem;
 }
 
+/* Logo, name and dates on the first line; the details span to the right edge below them */
 .row {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 1rem;
+  column-gap: 1rem;
   font-size: 1.1rem;
 }
 
+.project-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+/* Lets the name and details take grid cells of their own */
 .grow {
-  flex: 1;
-  min-width: 0;
+  display: contents;
+}
+
+.role-row .role {
+  grid-column: 2 / -1;
+}
+
+.project-row .role {
+  grid-column: 1 / -1;
 }
 
 .muted {
@@ -303,7 +317,7 @@ h2 {
 }
 
 .end {
-  flex-shrink: 0;
+  grid-area: 1 / -2;
   text-align: right;
 }
 
@@ -498,10 +512,15 @@ footer .resume-dropdown {
 
   /* Stack logo, name and dates in one centered column */
   .row {
+    display: flex;
     flex-direction: column;
     align-items: center;
     row-gap: 0.4rem;
     text-align: center;
+  }
+
+  .grow {
+    display: block;
   }
 
   .row .end {
