@@ -14,6 +14,29 @@
   color-scheme: dark;
 }
 
+@font-face {
+  font-family: 'Chakra Petch';
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/chakra-petch-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Chakra Petch';
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/chakra-petch-600.woff2') format('woff2');
+}
+
+/* Bio, section headings, company and project names, and positions; the hero name and body text stay on the system font */
+.hero .bio,
+h2,
+.role-row .grow > p,
+.role-row .role .muted,
+.project-row .grow > a {
+  font-family: 'Chakra Petch', sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }
